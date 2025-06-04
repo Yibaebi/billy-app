@@ -1,11 +1,13 @@
 import { getIsAndroid, getStatusBarHeight } from '@/utils/helpers';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView as RNCSafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SafeAreaViewComponent({ children }: { children: React.ReactNode }) {
-  return <RNCSafeAreaView style={SafeAreaViewStyles.safeArea}>{children}</RNCSafeAreaView>;
+  return (
+    <SafeAreaView
+      className="bg-neutral-100 h-full w-full"
+      style={{ paddingTop: getIsAndroid() ? getStatusBarHeight() : 0 }}
+    >
+      {children}
+    </SafeAreaView>
+  );
 }
-
-const SafeAreaViewStyles = StyleSheet.create({
-  safeArea: { paddingTop: getIsAndroid() ? getStatusBarHeight() : 0 },
-});

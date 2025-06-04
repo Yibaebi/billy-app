@@ -1,27 +1,27 @@
 // constants/colors.ts
 
-export const Colors = {
+const Colors = {
   // Primary colors (Green palette from brand)
   primary: {
-    50: '#ECFCD1',
-    100: '#CFF78C',
-    200: '#BBF55F',
-    300: '#9EF01A',
-    400: '#7CBD14',
-    500: '#395709',
+    100: '#ECFCD1', // Light green
+    200: '#CFF78C', // Medium light green
+    300: '#BBF55F', // Medium green
+    400: '#9EF01A', // Primary brand green
+    500: '#7CBD14', // Medium dark green
+    600: '#395709', // Dark green
   },
 
   // Secondary colors (Gray palette from brand)
   secondary: {
     base: '#1F2614',
-    50: '#FBFCFA',
-    100: '#F4F5F2',
-    200: '#ECDEA',
-    300: '#D7D9D2',
-    400: '#ACB3A3',
-    500: '#7B8074',
-    600: '#4A4D46',
-    700: '#223306',
+    100: '#FBFCFA',
+    200: '#F4F5F2',
+    300: '#ECDEA',
+    400: '#D7D9D2',
+    500: '#ACB3A3',
+    600: '#7B8074',
+    700: '#4A4D46',
+    800: '#223306',
   },
 
   // Semantic color mappings
@@ -33,6 +33,9 @@ export const Colors = {
   textSecondary: '#7B8074', // Secondary text
   border: '#D7D9D2', // Border color
   accent: '#ACB3A3', // Accent color
+
+  // Standard error
+  error: '#B00020',
 
   // Common color shortcuts
   white: '#FFFFFF',
