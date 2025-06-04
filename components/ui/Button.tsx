@@ -1,42 +1,83 @@
+import { cva, type VariantProps } from 'class-variance-authority';
+import clsx from 'clsx';
 import { ActivityIndicator, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+
 import ByText, { ByTextProps } from './Text';
 
-// Button variant types
-type ByButtonVariant = 'primary' | 'primary-light';
-type ByButtonSize = 'sm' | 'md' | 'lg' | 'xl';
+// CVA variants for the button
+const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-6 flex-row', {
+  variants: {
+    variant: {
+      primary: 'bg-primary-400 active:bg-primary-500',
+      'primary-light': 'bg-primary-100 active:bg-primary-200',
+      neutral: 'bg-neutral-200 active:bg-neutral-300',
+    },
+    size: {
+      sm: 'h-[36px] px-4',
+      md: 'h-[48px] px-6',
+      lg: 'h-[56px] px-8',
+      xl: 'h-[64px] px-10',
+    },
+    fullWidth: {
+      true: 'w-full',
+      false: '',
+    },
+    disabled: {
+      true: 'bg-neutral-200 opacity-50',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    // Disabled state overrides all other variants
+    {
+      disabled: true,
+      className: '!bg-neutral-200 !opacity-50',
+    },
+    {
+      disabled: true,
+      variant: 'primary',
+      className: '!bg-primary-200 border border-primary-400 !opacity-50',
+    },
+  ],
+  defaultVariants: {
+    variant: 'primary',
+    size: 'md',
+    fullWidth: true,
+    disabled: false,
+  },
+});
 
-// Props interface
-interface ByButtonProps extends TouchableOpacityProps {
+// CVA variants for button text color based on variant
+const getTextColorForVariant = (
+  variant: 'primary' | 'primary-light' | 'neutral',
+  disabled: boolean
+): ByTextProps['fontColor'] => {
+  if (disabled) return 'secondary';
+
+  switch (variant) {
+    case 'primary':
+      return 'secondary';
+    case 'primary-light':
+    case 'neutral':
+      return 'secondary';
+    default:
+      return 'secondary';
+  }
+};
+
+interface ByButtonProps extends Omit<TouchableOpacityProps, 'disabled'> {
   title: string;
-  variant?: ByButtonVariant;
-  size?: ByButtonSize;
+  variant?: VariantProps<typeof buttonVariants>['variant'];
+  size?: VariantProps<typeof buttonVariants>['size'];
   fontWeight?: ByTextProps['fontWeight'];
   fontColor?: ByTextProps['fontColor'];
-  loading?: boolean;
-  disabled?: boolean;
   fullWidth?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   className?: string;
 }
-
-// Variant styles using your billy color palette
-const getVariantStyles = (variant: ByButtonVariant, disabled: boolean) => {
-  const baseStyles = 'rounded-[100px] h-[48px] flex items-center justify-center px-6';
-
-  if (disabled) {
-    return `${baseStyles} bg-neutral-200 opacity-50`;
-  }
-
-  switch (variant) {
-    case 'primary':
-      return `${baseStyles} bg-primary-300 active:bg-primary-400`;
-    case 'primary-light':
-      return `${baseStyles} bg-primary-50 active:bg-primary-100`;
-    default:
-      return `${baseStyles} bg-primary-300 active:bg-primary-400`;
-  }
-};
 
 const ByButton: React.FC<ByButtonProps> = ({
   title,
@@ -49,19 +90,24 @@ const ByButton: React.FC<ByButtonProps> = ({
   rightIcon,
   className = '',
   fontWeight = 'semibold',
-  fontColor = 'secondary',
+  fontColor,
   onPress,
   ...props
 }) => {
   const isDisabled = disabled || loading;
-
-  const buttonStyles = [getVariantStyles(variant, isDisabled), fullWidth ? 'w-full' : '', className]
-    .filter(Boolean)
-    .join(' ');
+  const textColor = fontColor || getTextColorForVariant(variant || 'primary', isDisabled);
 
   return (
     <TouchableOpacity
-      className={buttonStyles}
+      className={clsx(
+        buttonVariants({
+          variant: isDisabled ? undefined : variant,
+          size,
+          fullWidth,
+          disabled: isDisabled,
+        }),
+        className
+      )}
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.8}
@@ -74,7 +120,7 @@ const ByButton: React.FC<ByButtonProps> = ({
       {loading && <ActivityIndicator size="small" className="mr-2 text-white" />}
 
       {/* Button Text */}
-      <ByText fontWeight={fontWeight} fontColor={fontColor}>
+      <ByText fontWeight={fontWeight} fontColor={textColor}>
         {loading ? 'Loading...' : title}
       </ByText>
 
