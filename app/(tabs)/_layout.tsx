@@ -1,31 +1,35 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
+import Colors from '@/constants/Colors';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary[100],
+        tabBarActiveTintColor: Colors.text,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: { position: 'absolute' },
-          default: {},
-        }),
+        tabBarStyle: {
+          ...TabLayoutStyle.tabBar,
+          ...Platform.select({
+            ios: { position: 'absolute' },
+            default: {},
+          }),
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          headerShown: false,
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarLabel: '',
         }}
       />
       {/* <Tabs.Screen
@@ -38,3 +42,19 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const TabLayoutStyle = StyleSheet.create({
+  tabBar: {
+    borderWidth: 1,
+    borderColor: 'red',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingBottom: 32,
+    backgroundColor: 'blue',
+    height: 96,
+  },
+});
