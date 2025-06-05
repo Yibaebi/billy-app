@@ -48,22 +48,25 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
 });
 
 // CVA variants for button text color based on variant
-const getTextColorForVariant = (
-  variant: 'primary' | 'primary-light' | 'neutral',
-  disabled: boolean
-): ByTextProps['fontColor'] => {
-  if (disabled) return 'secondary';
-
-  switch (variant) {
-    case 'primary':
-      return 'secondary';
-    case 'primary-light':
-    case 'neutral':
-      return 'secondary';
-    default:
-      return 'secondary';
-  }
-};
+const textColorVariants = cva('text-secondary', {
+  variants: {
+    variant: {
+      primary: 'secondary' as const,
+      'primary-light': 'secondary' as const,
+      neutral: 'secondary' as const,
+    },
+    disabled: {
+      true: 'secondary' as const,
+      false: '',
+    },
+  },
+  compoundVariants: [
+    {
+      disabled: true,
+      className: 'secondary' as const,
+    },
+  ],
+});
 
 interface ByButtonProps extends Omit<TouchableOpacityProps, 'disabled'> {
   title: string;
@@ -81,7 +84,7 @@ interface ByButtonProps extends Omit<TouchableOpacityProps, 'disabled'> {
 
 const ByButton: React.FC<ByButtonProps> = ({
   title,
-  variant = 'primary',
+  variant = 'primary-light',
   size = 'md',
   loading = false,
   disabled = false,
@@ -89,13 +92,13 @@ const ByButton: React.FC<ByButtonProps> = ({
   leftIcon,
   rightIcon,
   className = '',
-  fontWeight = 'semibold',
+  fontWeight = 'bold',
   fontColor,
   onPress,
   ...props
 }) => {
   const isDisabled = disabled || loading;
-  const textColor = fontColor || getTextColorForVariant(variant || 'primary', isDisabled);
+  const textColor = fontColor || textColorVariants({ variant, disabled: isDisabled });
 
   return (
     <TouchableOpacity
@@ -120,7 +123,7 @@ const ByButton: React.FC<ByButtonProps> = ({
       {loading && <ActivityIndicator size="small" className="mr-2 text-white" />}
 
       {/* Button Text */}
-      <ByText fontWeight={fontWeight} fontColor={textColor}>
+      <ByText fontWeight={fontWeight} fontColor={textColor as ByTextProps['fontColor']}>
         {loading ? 'Loading...' : title}
       </ByText>
 

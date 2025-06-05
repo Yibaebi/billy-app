@@ -7,7 +7,6 @@ import ByStack from '@/components/ui/Stack';
 
 import ByButton from '@/components/ui/Button';
 import ByCheckbox from '@/components/ui/Checkbox';
-import CountrySelect, { Country } from '@/components/ui/CountrySelect';
 import ByText from '@/components/ui/Text';
 
 // Tracking Default Options
@@ -19,7 +18,7 @@ const DEFAULT_OPTIONS = [
 
 export default function OnboardingTrackInterest() {
   const [interests, setInterests] = useState(DEFAULT_OPTIONS);
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+
   // Toggle source
   const handleToggleInterest = (id: string) =>
     setInterests(currInterest =>
@@ -44,12 +43,6 @@ export default function OnboardingTrackInterest() {
           justifyContent="center"
           className="w-full gap-4"
         >
-          <CountrySelect
-            value={selectedCountry}
-            onSelect={setSelectedCountry}
-            placeholder="Select country"
-          />
-
           {/* Title and description */}
           <ByStack
             direction="column"

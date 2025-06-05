@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { TouchableOpacity, View, ViewProps } from 'react-native';
 
+import CheckmarkIcon from '../svgs/CheckmarkIcon';
 import ByText, { ByTextProps } from './Text';
 
 // CVA variants for the container
@@ -21,13 +22,12 @@ const containerVariants = cva(
   }
 );
 
-// CVA variants for the checkbox circle
-const checkboxVariants = cva('rounded-full border flex items-center justify-center', {
+// CVA variants for the checkbox circle/square
+const checkboxVariants = cva('border flex items-center justify-center', {
   variants: {
-    size: {
-      sm: 'w-5 h-5',
-      md: 'w-6 h-6',
-      lg: 'w-8 h-8',
+    shape: {
+      circle: 'rounded-full',
+      square: 'rounded-md',
     },
     checked: {
       true: 'border-primary-500 bg-primary-500',
@@ -39,23 +39,9 @@ const checkboxVariants = cva('rounded-full border flex items-center justify-cent
     },
   },
   defaultVariants: {
-    size: 'md',
+    shape: 'circle',
     checked: false,
     disabled: false,
-  },
-});
-
-// CVA variants for the inner dot
-const dotVariants = cva('rounded-full bg-white', {
-  variants: {
-    size: {
-      sm: 'w-1.5 h-1.5',
-      md: 'w-2 h-2',
-      lg: 'w-3 h-3',
-    },
-  },
-  defaultVariants: {
-    size: 'md',
   },
 });
 
@@ -66,7 +52,8 @@ interface ByCheckboxProps extends ViewProps, VariantProps<typeof containerVarian
   disabled?: boolean;
   labelProps?: Partial<ByTextProps>;
   className?: string;
-  checkboxSize?: VariantProps<typeof checkboxVariants>['size'];
+  shape?: VariantProps<typeof checkboxVariants>['shape'];
+  disableAnimation?: boolean;
 }
 
 export default function ByCheckbox({
@@ -76,9 +63,29 @@ export default function ByCheckbox({
   onToggle,
   labelProps,
   className,
-  checkboxSize,
+  shape = 'circle',
+  disableAnimation = false,
   ...props
 }: ByCheckboxProps) {
+  // Render check indicator
+  const renderCheckIndicator = () => {
+    if (!checked) return null;
+
+    if (shape === 'square') {
+      return (
+        <CheckmarkIcon
+          key={checked ? 'checked' : 'unchecked'}
+          size={16}
+          color="white"
+          animate={!disableAnimation}
+        />
+      );
+    } else {
+      // For circle, keep the dot
+      return <View className="w-[7px] h-[7px] rounded-full bg-white" />;
+    }
+  };
+
   return (
     <TouchableOpacity
       className={clsx(containerVariants({ disabled }), className)}
@@ -91,8 +98,8 @@ export default function ByCheckbox({
         {label}
       </ByText>
 
-      <View className={checkboxVariants({ size: checkboxSize, checked, disabled })}>
-        {checked && <View className={dotVariants({ size: checkboxSize })} />}
+      <View className={clsx(checkboxVariants({ shape, checked, disabled }), 'w-6 h-6')}>
+        {renderCheckIndicator()}
       </View>
     </TouchableOpacity>
   );

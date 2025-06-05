@@ -6,7 +6,7 @@ import ByButton from '@/components/ui/Button';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
 
-export default function OnboardingLayout() {
+export default function OnboardingHome() {
   return (
     <SafeAreaViewComponent>
       <ByStack
