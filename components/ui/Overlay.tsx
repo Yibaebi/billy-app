@@ -1,5 +1,5 @@
 import { BlurView } from 'expo-blur';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Modal, TouchableOpacity, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -58,6 +58,7 @@ export const FadeOverlay: React.FC<FadeOverlayProps> = ({ visible, onClose, chil
 // ===========================================
 // 2. SLIDE UP OVERLAY (Bottom Sheet Style)
 // ===========================================
+
 interface SlideUpOverlayProps {
   visible: boolean;
   onClose: () => void;
@@ -73,9 +74,15 @@ export const SlideUpOverlay: React.FC<SlideUpOverlayProps> = ({
 }) => {
   const slideAnim = useRef(new Animated.Value(height)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
+  const [isModalVisible, setIsModalVisible] = useState(visible);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    if (visible) {
+    if (visible && !isModalVisible) {
+      // Opening: Show modal immediately, then animate in
+      setIsModalVisible(true);
+      setIsClosing(false);
+
       const slideIn = Animated.timing(slideAnim, {
         toValue: 0,
         duration: 300,
@@ -89,32 +96,72 @@ export const SlideUpOverlay: React.FC<SlideUpOverlayProps> = ({
       });
 
       Animated.parallel([slideIn, backdropIn]).start();
-    } else {
-      const slidinAnimation = Animated.timing(slideAnim, {
+    } else if (!visible && isModalVisible && !isClosing) {
+      // Closing: Start exit animation, then hide modal
+      setIsClosing(true);
+
+      const slideOut = Animated.timing(slideAnim, {
         toValue: height,
         duration: 250,
         useNativeDriver: true,
       });
 
-      const backdropAnimation = Animated.timing(backdropAnim, {
+      const backdropOut = Animated.timing(backdropAnim, {
         toValue: 0,
         duration: 250,
         useNativeDriver: true,
       });
 
-      // Slide in and fade in the backdrop
-      Animated.parallel([slidinAnimation, backdropAnimation]).start();
-    }
-  }, [visible, slideAnim, backdropAnim, height]);
+      Animated.parallel([slideOut, backdropOut]).start(() => {
+        setIsModalVisible(false);
+        setIsClosing(false);
 
-  if (!visible) return null;
+        // Call onClose after animation completes
+        onClose();
+      });
+    }
+  }, [visible, isModalVisible, isClosing, slideAnim, backdropAnim, height, onClose]);
+
+  const handleCloseRequest = () => {
+    if (isClosing) return; // Prevent multiple close requests
+
+    // Trigger exit animation by setting internal state
+    setIsClosing(true);
+
+    const slideOut = Animated.timing(slideAnim, {
+      toValue: height,
+      duration: 250,
+      useNativeDriver: true,
+    });
+
+    const backdropOut = Animated.timing(backdropAnim, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    });
+
+    Animated.parallel([slideOut, backdropOut]).start(() => {
+      setIsModalVisible(false);
+      setIsClosing(false);
+
+      // Notify parent after animation completes
+      onClose();
+    });
+  };
+
+  if (!isModalVisible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="none">
+    <Modal
+      transparent
+      visible={isModalVisible}
+      animationType="none"
+      onRequestClose={handleCloseRequest}
+    >
       <View className="flex-1">
         {/* Backdrop */}
         <Animated.View className="absolute inset-0 bg-black/30" style={{ opacity: backdropAnim }}>
-          <TouchableOpacity className="flex-1" onPress={onClose} />
+          <TouchableOpacity className="flex-1" onPress={handleCloseRequest} />
         </Animated.View>
 
         {/* Slide Up Content */}
