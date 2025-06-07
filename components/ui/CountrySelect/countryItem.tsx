@@ -45,11 +45,9 @@ export default function CountrySelectItem({
           {item.name}
         </ByText>
 
-        {showDialCode && (
-          <ByText fontWeight="light" size="sm" fontColor="secondary" className="opacity-70 mt-0.5">
-            {item.dial_code} • {item.code}
-          </ByText>
-        )}
+        <ByText fontWeight="light" size="sm" fontColor="secondary" className="opacity-70 mt-0.5">
+          {item.dial_code} • {item.code}
+        </ByText>
       </View>
 
       {isSelected && (

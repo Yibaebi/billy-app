@@ -8,6 +8,8 @@ import { SlideUpOverlay } from '@/components/ui/Overlay';
 import ByText from '@/components/ui/Text';
 import ByInput from '@/components/ui/TextInput';
 import COUNTRIES from '@/constants/Countries';
+import { getIsAndroid } from '@/utils/helpers';
+
 import { IconSymbol } from '../IconSymbol';
 import CountrySelectItem from './countryItem';
 import CountrySelectEmptyState from './empty';
@@ -37,6 +39,7 @@ export type Country = {
   flag: string;
   code: string;
   dial_code: string;
+  currency: string;
 };
 
 interface CountrySelectProps {
@@ -69,7 +72,7 @@ export default function CountrySelect({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlatList<Country>>(null);
   const scrollTimeoutRef = useRef<number | null>(null);
 
   // Filter countries based on search query with improved performance
@@ -115,7 +118,7 @@ export default function CountrySelect({
       });
 
     // Use minimal delay for better performance
-    scrollTimeoutRef.current = setTimeout(scrollToIndex, 50);
+    scrollTimeoutRef.current = setTimeout(scrollToIndex, 80);
   }, [isOpen, value, filteredCountries.length, selectedIndex]);
 
   // Effect for scrolling to selected item
@@ -158,8 +161,15 @@ export default function CountrySelect({
         activeOpacity={0.7}
       >
         {value ? (
-          <View className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden">
-            <ByText className="w-full h-full text-2xl leading-none">{value.flag}</ByText>
+          <View className="h-full overflow-hidden flex-row items-center justify-center rounded-full">
+            <ByText
+              className={clsx(
+                'w-6 h-6',
+                getIsAndroid() ? 'text-2xl leading-none' : 'text-[24px]/[28px]'
+              )}
+            >
+              {value.flag}
+            </ByText>
           </View>
         ) : (
           <View className="w-6 h-6 rounded-full bg-neutral-100 items-center justify-center"></View>
@@ -211,7 +221,7 @@ export default function CountrySelect({
           <FlatList
             ref={flatListRef}
             data={filteredCountries}
-            keyExtractor={item => item.code}
+            keyExtractor={(item, index) => `${item.code}-${index}`}
             getItemLayout={getItemLayout}
             initialNumToRender={INITIAL_NUM_TO_RENDER}
             maxToRenderPerBatch={MAX_TO_RENDER_PER_BATCH}
@@ -223,6 +233,7 @@ export default function CountrySelect({
               minIndexForVisible: 0,
               autoscrollToTopThreshold: 100,
             }}
+            disableVirtualization={false}
             renderItem={({ item }) => (
               <CountrySelectItem
                 item={item}
