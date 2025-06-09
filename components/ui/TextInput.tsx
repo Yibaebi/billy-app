@@ -8,9 +8,9 @@ export default function ByTextInput(props: TextInputProps) {
       {...props}
       placeholderTextColor={props.placeholderTextColor || COLORS.secondary[400]}
       className={clsx(
-        `px-3 py-3.5 font-nunito text-secondary-base
+        `px-3 font-nunito text-secondary-base
         text-lg rounded-[12px] border border-secondary-400 h-[48px]
-        disabled:opacity-50`,
+        disabled:opacity-50 w-full`,
         props.className
       )}
     />

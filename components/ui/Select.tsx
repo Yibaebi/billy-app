@@ -44,10 +44,10 @@ export interface BySelectOption {
   disabled?: boolean;
 }
 
-interface BySelectProps extends VariantProps<typeof containerVariants> {
-  options: BySelectOption[];
-  value?: BySelectOption | null;
-  onSelect?: (option: BySelectOption) => void;
+interface BySelectProps<T extends BySelectOption> extends VariantProps<typeof containerVariants> {
+  options: (T | null | undefined)[];
+  value?: T | null;
+  onSelect?: (option: T) => void;
   placeholder?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
@@ -60,7 +60,7 @@ interface BySelectProps extends VariantProps<typeof containerVariants> {
   errorMessage?: string;
 }
 
-export default function BySelect({
+export default function BySelect<T extends BySelectOption>({
   options,
   value,
   onSelect,
@@ -74,25 +74,33 @@ export default function BySelect({
   overlayTitle = 'Select Option',
   emptyMessage = 'No options found',
   renderOption,
-}: BySelectProps) {
+}: BySelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filter options based on search query
   const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) return options;
+    if (!searchQuery.trim()) {
+      return options as T[];
+    }
 
+    // Filter options based on search query
     const query = searchQuery.toLowerCase();
 
-    return options.filter(
-      option =>
-        option.label.toLowerCase().includes(query) ||
-        option.value.toLowerCase().includes(query) ||
-        (option.description && option.description.toLowerCase().includes(query))
-    );
+    return options.filter(option => {
+      const label = option?.label.toLowerCase();
+      const value = option?.value.toLowerCase();
+      const description = option?.description?.toLowerCase();
+
+      return (
+        label?.includes(query) ||
+        value?.includes(query) ||
+        (description && description.includes(query))
+      );
+    }) as T[];
   }, [options, searchQuery]);
 
-  const handleSelect = (option: BySelectOption) => {
+  const handleSelect = (option: T) => {
     onSelect?.(option);
     setIsOpen(false);
     setSearchQuery('');
@@ -110,7 +118,7 @@ export default function BySelect({
   };
 
   // Default option renderer
-  const defaultRenderOption = (option: BySelectOption, isSelected: boolean) => (
+  const defaultRenderOption = (option: T, isSelected: boolean) => (
     <TouchableOpacity
       onPress={() => handleSelect(option)}
       className={clsx(
@@ -123,10 +131,10 @@ export default function BySelect({
     >
       <View className="flex-1">
         <ByText
-          fontWeight={isSelected ? 'semibold' : 'regular'}
+          fontWeight={isSelected ? 'bold' : 'regular'}
           size="base"
           numberOfLines={1}
-          className={isSelected ? 'text-secondary-500' : ''}
+          fontColor={isSelected ? 'primary' : 'secondary'}
         >
           {option.label}
         </ByText>
@@ -165,7 +173,7 @@ export default function BySelect({
     </View>
   );
 
-  const renderOptionItem = ({ item }: { item: BySelectOption }): React.ReactElement => {
+  const renderOptionItem = ({ item }: { item: T }): React.ReactElement => {
     const isSelected = value?.value === item.value;
 
     if (renderOption) {

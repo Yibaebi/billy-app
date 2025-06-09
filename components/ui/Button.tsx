@@ -39,12 +39,6 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
       className: '!bg-primary-200 border border-primary-400 !opacity-50',
     },
   ],
-  defaultVariants: {
-    variant: 'primary',
-    size: 'md',
-    fullWidth: true,
-    disabled: false,
-  },
 });
 
 // CVA variants for button text color based on variant
