@@ -15,7 +15,7 @@ import ByText from '@/components/ui/Text';
 import ByInput from '@/components/ui/TextInput';
 import Colors from '@/constants/Colors';
 
-// Example data structure
+// Default Options
 const DEFAULT_OPTIONS = [
   { id: '1', label: 'Salary', isDefault: false, checked: false },
   { id: '2', label: 'Freelance', isDefault: false, checked: false },
@@ -202,7 +202,7 @@ export default function OnboardingIncome() {
           variant="primary"
           fullWidth
           title="Next"
-          className="absolute bottom-0"
+          className="absolute bottom-10"
           onPress={() => {}}
         />
       </ByStack>

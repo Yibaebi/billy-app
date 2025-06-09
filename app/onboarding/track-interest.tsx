@@ -35,7 +35,7 @@ export default function OnboardingTrackInterest() {
         justifyContent="center"
         className="h-full w-full px-12 pb-12 relative"
       >
-        <ByAnimatedProgressBar step={1} numberOfSteps={4} />
+        <ByAnimatedProgressBar step={3} numberOfSteps={5} />
 
         <ByStack
           direction="column"
@@ -50,7 +50,7 @@ export default function OnboardingTrackInterest() {
             justifyContent="center"
             className="gap-1 mb-4"
           >
-            <ByText textAlign="center" fontWeight="bold" className="text-2xl">
+            <ByText textAlign="center" fontWeight="bold" size="2xl">
               What would you like to track with Billy?
             </ByText>
 

@@ -1,33 +1,74 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import clsx from 'clsx';
+import React, { useMemo, useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 
 import SafeAreaViewComponent from '@/components/SafeAreaView';
 import ByAnimatedProgressBar from '@/components/ui/AnimatedProgressBar';
 import ByStack from '@/components/ui/Stack';
 
+import ByPlusIcon from '@/components/svgs/PlusIcon';
 import ByButton from '@/components/ui/Button';
 import ByCheckbox from '@/components/ui/Checkbox';
-import CountrySelect, { Country } from '@/components/ui/CountrySelect/index';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { SlideUpOverlay } from '@/components/ui/Overlay';
 import ByText from '@/components/ui/Text';
+import ByInput from '@/components/ui/TextInput';
+import Colors from '@/constants/Colors';
 
-// Tracking Default Options
+// Default Options
 const DEFAULT_OPTIONS = [
-  { id: '1', label: 'Daily expenses', isDefault: false, checked: false },
-  { id: '2', label: 'Recurring bills', isDefault: false, checked: false },
-  { id: '3', label: 'Savings goals', isDefault: false, checked: false },
+  { id: '1', label: 'Salary', isDefault: false, checked: false },
+  { id: '2', label: 'Freelance', isDefault: false, checked: false },
 ];
 
-export default function OnboardingTrackInterest() {
-  const [interests, setInterests] = useState(DEFAULT_OPTIONS);
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+export default function OnboardingIncome() {
+  const [showAddSource, setShowAddSource] = useState(false);
+  const [newSource, setNewSource] = useState('');
+  const [sources, setSources] = useState(DEFAULT_OPTIONS);
+
+  // Show add source input
+  const handleAddSource = () => setShowAddSource(true);
+
+  // Add a new source
+  const addSource = () => {
+    if (!newSource) return;
+
+    // Check if source already exists
+    const existingSource = sources.find(
+      source => source.label.toLowerCase() === newSource.toLowerCase()
+    );
+
+    if (existingSource) return;
+
+    // New source data
+    const newSourceData = {
+      id: newSource.split(' ').join('-').toLowerCase(),
+      label: newSource,
+      isDefault: false,
+      checked: true,
+    };
+
+    setSources(currSource => [newSourceData, ...currSource]);
+    setShowAddSource(false);
+    setNewSource('');
+  };
 
   // Toggle source
-  const handleToggleInterest = (id: string) =>
-    setInterests(currInterest =>
-      currInterest.map(interest =>
-        interest.id === id ? { ...interest, checked: !interest.checked } : interest
+  const handleToggleSource = (id: string) =>
+    setSources(currSource =>
+      currSource.map(source =>
+        source.id === id ? { ...source, checked: !source.checked } : source
       )
     );
+
+  const checkIfNewSourceExists = useMemo(
+    () => sources.find(source => source.label.toLowerCase() === newSource.toLowerCase()),
+    [sources, newSource]
+  );
+
+  // Remove source
+  const handleRemoveSource = (id: string) =>
+    setSources(currSource => currSource.filter(source => source.id !== id));
 
   return (
     <SafeAreaViewComponent>
@@ -45,12 +86,6 @@ export default function OnboardingTrackInterest() {
           justifyContent="center"
           className="w-full gap-4"
         >
-          <CountrySelect
-            value={selectedCountry}
-            onSelect={setSelectedCountry}
-            placeholder="Select country"
-          />
-
           {/* Title and description */}
           <ByStack
             direction="column"
@@ -58,12 +93,16 @@ export default function OnboardingTrackInterest() {
             justifyContent="center"
             className="gap-1 mb-4"
           >
-            <ByText textAlign="center" fontWeight="bold" className="text-2xl">
-              What would you like to track with Billy?
+            <ByText fontWeight="bold" className="text-2xl">
+              How do you earn?
             </ByText>
 
-            <ByText className="text-center max-w-[300px]">
-              Choose what you&apos;d like to keep an eye on.
+            <ByText className="text-center max-w-[250px]">
+              List your sources of income. You can add a max of{' '}
+              <ByText fontWeight="bold" fontStyle="italic">
+                six
+              </ByText>{' '}
+              sources.
             </ByText>
           </ByStack>
 
@@ -75,25 +114,97 @@ export default function OnboardingTrackInterest() {
               justifyContent="center"
               className="w-full gap-4"
             >
-              {interests.map(option => (
+              {sources.map(option => (
                 <View key={option.id} className="flex relative w-full">
                   <ByCheckbox
                     label={option.label}
                     checked={option.checked}
-                    shape="circle"
-                    onToggle={() => handleToggleInterest(option.id)}
+                    onToggle={() => handleToggleSource(option.id)}
                   />
+
+                  {!option.isDefault && sources.length > 1 && (
+                    <TouchableOpacity
+                      onPress={() => handleRemoveSource(option.id)}
+                      className="absolute -left-[12px] -top-[12px] z-10"
+                    >
+                      <IconSymbol name="xmark.circle.fill" size={24} color={Colors.error} />
+                    </TouchableOpacity>
+                  )}
                 </View>
               ))}
             </ByStack>
           </View>
+
+          {/* Add new source overlay */}
+          <SlideUpOverlay
+            visible={showAddSource}
+            height={320}
+            onClose={() => setShowAddSource(false)}
+          >
+            <ByStack
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              className="mb-4 "
+            >
+              <ByText fontWeight="bold" className="text-2xl mb-0.5">
+                Add new source
+              </ByText>
+
+              <ByText textAlign="center">
+                Source name must be at least 3 characters minimum and a maximum of 20 characters.
+              </ByText>
+            </ByStack>
+
+            <ByStack
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              className="w-full gap-4 p-5 border-2 bg-secondary-200 border-dotted border-secondary-400 rounded-lg"
+            >
+              <ByInput
+                className={clsx('w-full !bg-white', !!checkIfNewSourceExists && '!border-red-500')}
+                placeholder="Add new source"
+                value={newSource}
+                onChangeText={setNewSource}
+              />
+
+              <ByStack alignItems="center" justifyContent="flex-end" className="w-full gap-4">
+                <ByButton
+                  variant="neutral"
+                  title="Close"
+                  className="border border-neutral-400"
+                  onPress={() => setShowAddSource(false)}
+                />
+
+                <ByButton
+                  variant="primary"
+                  title="Add"
+                  onPress={addSource}
+                  disabled={!!checkIfNewSourceExists || newSource.length < 3}
+                />
+              </ByStack>
+            </ByStack>
+          </SlideUpOverlay>
+
+          <ByButton
+            variant="neutral"
+            title="Add Source"
+            className="w-full border-2 border-dotted border-neutral-400"
+            rightIcon={<ByPlusIcon />}
+            disabled={sources.length === 6}
+            onPress={handleAddSource}
+          />
         </ByStack>
 
         {/* Next button */}
-        <ByStack className="absolute bottom-0 w-full gap-4">
-          <ByButton variant="primary-light" title="Back" onPress={() => {}} className="w-1/2" />
-          <ByButton variant="primary" title="Next" onPress={() => {}} className="w-1/2" />
-        </ByStack>
+        <ByButton
+          variant="primary"
+          fullWidth
+          title="Next"
+          className="absolute bottom-10"
+          onPress={() => {}}
+        />
       </ByStack>
     </SafeAreaViewComponent>
   );
