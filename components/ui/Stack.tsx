@@ -18,7 +18,7 @@ export default function ByStack({
   ...props
 }: ByStackProps) {
   return (
-    <View {...props} style={{ gap, flexDirection: direction, justifyContent, alignItems }}>
+    <View style={{ gap, flexDirection: direction, justifyContent, alignItems }} {...props}>
       {children}
     </View>
   );

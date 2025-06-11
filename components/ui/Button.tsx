@@ -78,7 +78,7 @@ interface ByButtonProps extends Omit<TouchableOpacityProps, 'disabled'> {
 
 const ByButton: React.FC<ByButtonProps> = ({
   title,
-  variant = 'primary-light',
+  variant = 'primary',
   size = 'md',
   loading = false,
   disabled = false,
