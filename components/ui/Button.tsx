@@ -10,6 +10,7 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
     variant: {
       primary: 'bg-primary-400 active:bg-primary-500',
       'primary-light': 'bg-primary-100 active:bg-primary-200',
+      'primary-outline': 'border border-primary-400',
       neutral: 'bg-neutral-200 active:bg-neutral-300',
     },
     size: {
@@ -42,11 +43,12 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
 });
 
 // CVA variants for button text color based on variant
-const textColorVariants = cva('text-secondary', {
+const textColorVariants = cva('', {
   variants: {
     variant: {
       primary: 'secondary' as const,
       'primary-light': 'secondary' as const,
+      'primary-outline': 'primary' as const,
       neutral: 'secondary' as const,
     },
     disabled: {

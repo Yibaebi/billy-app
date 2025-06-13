@@ -6,82 +6,79 @@ import { TouchableOpacity, View } from 'react-native';
 import ByText from './Text';
 
 // CVA variants for the selectable tag
-const tagVariants = cva(
-  'flex-row items-center justify-center rounded-full border transition-all duration-200',
-  {
-    variants: {
-      variant: {
-        default: '',
-        primary: '',
-        secondary: '',
-        outline: '',
-      },
-      size: {
-        xs: 'px-2 py-1',
-        sm: 'px-3 py-1.5',
-        md: 'px-4 py-2',
-        lg: 'px-5 py-2.5',
-      },
-      selected: {
-        true: '',
-        false: '',
-      },
-      disabled: {
-        true: 'opacity-50',
-        false: '',
-      },
+const tagVariants = cva('flex-row items-center justify-center rounded-full border', {
+  variants: {
+    variant: {
+      default: '',
+      primary: '',
+      secondary: '',
+      outline: '',
     },
-    compoundVariants: [
-      // Default variant
-      {
-        variant: 'default',
-        selected: false,
-        class: 'bg-neutral-100 border-neutral-200',
-      },
-      {
-        variant: 'default',
-        selected: true,
-        class: 'bg-primary-500 border-primary-500',
-      },
-      // Primary variant
-      {
-        variant: 'primary',
-        selected: false,
-        class: 'bg-primary-50 border-primary-200',
-      },
-      {
-        variant: 'primary',
-        selected: true,
-        class: 'bg-primary-500 border-primary-500',
-      },
-      // Secondary variant
-      {
-        variant: 'secondary',
-        selected: false,
-        class: 'bg-secondary-50 border-secondary-200',
-      },
-      {
-        variant: 'secondary',
-        selected: true,
-        class: 'bg-secondary-500 border-secondary-500',
-      },
-      // Outline variant
-      {
-        variant: 'outline',
-        selected: false,
-        class: 'bg-white border-neutral-300',
-      },
-      {
-        variant: 'outline',
-        selected: true,
-        class: 'bg-neutral-900 border-neutral-900',
-      },
-    ],
-  }
-);
+    size: {
+      xs: 'px-2 py-1',
+      sm: 'px-3 py-1.5',
+      md: 'px-4 py-2',
+      lg: 'px-5 py-2.5',
+    },
+    selected: {
+      true: '',
+      false: '',
+    },
+    disabled: {
+      true: 'opacity-50',
+      false: '',
+    },
+  },
+  compoundVariants: [
+    // Default variant
+    {
+      variant: 'default',
+      selected: false,
+      class: 'border-neutral-200',
+    },
+    {
+      variant: 'default',
+      selected: true,
+      class: 'border-primary-500',
+    },
+    // Primary variant
+    {
+      variant: 'primary',
+      selected: false,
+      class: 'bg-primary-50 border-primary-200',
+    },
+    {
+      variant: 'primary',
+      selected: true,
+      class: 'bg-primary-500 border-primary-500',
+    },
+    // Secondary variant
+    {
+      variant: 'secondary',
+      selected: false,
+      class: 'bg-secondary-50 border-secondary-200',
+    },
+    {
+      variant: 'secondary',
+      selected: true,
+      class: 'bg-secondary-500 border-secondary-500',
+    },
+    // Outline variant
+    {
+      variant: 'outline',
+      selected: false,
+      class: 'bg-white border-neutral-300',
+    },
+    {
+      variant: 'outline',
+      selected: true,
+      class: 'bg-neutral-900 border-neutral-900',
+    },
+  ],
+});
 
 // Text variants for different states
-const textVariants = cva('font-medium', {
+const textVariants = cva('', {
   variants: {
     variant: {
       default: '',
@@ -92,7 +89,7 @@ const textVariants = cva('font-medium', {
     size: {
       xs: 'text-xs',
       sm: 'text-sm',
-      md: 'text-sm',
+      md: 'text-base',
       lg: 'text-base',
     },
     selected: {
@@ -110,7 +107,7 @@ const textVariants = cva('font-medium', {
     {
       variant: 'default',
       selected: true,
-      class: 'text-white',
+      class: 'text-primary-500',
     },
     // Primary variant text colors
     {
@@ -169,16 +166,10 @@ export default function BySelectableTag({
   icon,
   showCheckmark = false,
 }: BySelectableTagProps) {
-  const handlePress = () => {
-    if (!disabled) {
-      onPress?.();
-    }
-  };
-
   return (
     <TouchableOpacity
       className={clsx(tagVariants({ variant, size, selected, disabled }), className)}
-      onPress={handlePress}
+      onPress={onPress}
       disabled={disabled}
       activeOpacity={disabled ? 1 : 0.7}
     >
@@ -195,7 +186,7 @@ export default function BySelectableTag({
         <View className={clsx('ml-1.5', size === 'xs' && 'ml-1')}>
           <ByText
             className={clsx(
-              'text-white',
+              'text-primary-500',
               size === 'xs' && 'text-xs',
               size === 'sm' && 'text-sm',
               size === 'md' && 'text-sm',
