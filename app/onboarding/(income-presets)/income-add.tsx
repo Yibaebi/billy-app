@@ -45,7 +45,7 @@ export default function OnboardingIncomeAdd() {
     );
 
   return (
-    <ByStack direction="column" className="w-full h-full gap-4 pt-[100px]">
+    <ByStack direction="column" className="w-full h-full gap-4 pt-[100px] px-12">
       {/* Title and description */}
       <ByStack direction="column" alignItems="flex-start" className="gap-3 mb-4">
         <ByStack alignItems="center" className="gap-2">

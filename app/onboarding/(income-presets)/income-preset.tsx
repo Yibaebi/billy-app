@@ -73,7 +73,7 @@ export default function OnboardingIncomePreset() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      className="w-full h-full gap-4"
+      className="w-full h-full gap-4 px-12"
     >
       {/* Title and description */}
       <ByStack
@@ -113,9 +113,9 @@ export default function OnboardingIncomePreset() {
             {!option.isDefault && sources.length > 1 && (
               <TouchableOpacity
                 onPress={() => handleRemoveSource(option.id)}
-                className="absolute -left-[12px] -top-[12px] z-10"
+                className="absolute -left-[10px] -top-[10px] z-10"
               >
-                <IconSymbol name="xmark.circle.fill" size={24} color={Colors.error} />
+                <IconSymbol name="xmark.circle.fill" size={20} color={Colors.error} />
               </TouchableOpacity>
             )}
           </View>

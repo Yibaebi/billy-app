@@ -28,7 +28,7 @@ export default function OnboardingTrackInterest() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      className="w-full h-full gap-4"
+      className="w-full h-full gap-4 px-12"
     >
       {/* Title and description */}
       <ByStack

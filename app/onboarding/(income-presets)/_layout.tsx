@@ -7,21 +7,24 @@ import ByButton from '@/components/ui/Button';
 import ByStack from '@/components/ui/Stack';
 import clsx from 'clsx';
 
+// Onboarding steps
+const ONBOARDING_STEPS = {
+  'income-preset': 1,
+  'track-interest': 2,
+  'income-add': 3,
+  'add-expenses': 4,
+};
+
 export default function OnboardingPresetsLayout() {
   const pathname = usePathname();
 
   // Number of steps in the onboarding process
   const getPresetsProgress = (): number => {
-    switch (pathname) {
-      case '/onboarding/income-preset':
-        return 1;
-      case '/onboarding/track-interest':
-        return 2;
-      case '/onboarding/income-add':
-        return 3;
-      default:
-        return 0;
-    }
+    const currentStep = Object.keys(ONBOARDING_STEPS).find(step =>
+      pathname.includes(step)
+    ) as keyof typeof ONBOARDING_STEPS;
+
+    return currentStep ? ONBOARDING_STEPS[currentStep] : 0;
   };
 
   // Get button text based on the current step
@@ -39,8 +42,15 @@ export default function OnboardingPresetsLayout() {
 
     if (pathname.includes('income-add')) {
       return [
-        { label: 'Back', route: 'track-interest' as const, type: 'primary-light' as const },
-        { label: 'Next', route: 'track-interest' as const, type: 'primary' as const },
+        { label: 'Back', route: 'income-preset' as const, type: 'primary-light' as const },
+        { label: 'Next', route: 'add-expenses' as const, type: 'primary' as const },
+      ];
+    }
+
+    if (pathname.includes('add-expenses')) {
+      return [
+        { label: 'Back', route: 'income-add' as const, type: 'primary-light' as const },
+        { label: 'Next', route: 'add-expenses' as const, type: 'primary' as const },
       ];
     }
 
@@ -62,7 +72,7 @@ export default function OnboardingPresetsLayout() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerClassName="h-full max-h-screen p-12 pb-[120px]"
+        contentContainerClassName="h-full max-h-screen pt-12 pb-[120px]"
       >
         <Slot />
       </ScrollView>

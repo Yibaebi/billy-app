@@ -58,7 +58,7 @@ export default function ByAnimatedProgressBar({
         </View>
       </ByStack>
 
-      <ByText>{percentage}% done</ByText>
+      <ByText size="sm">{percentage}% done</ByText>
     </ByStack>
   );
 }
