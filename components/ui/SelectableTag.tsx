@@ -17,7 +17,7 @@ const tagVariants = cva('flex-row items-center justify-center rounded-full borde
     size: {
       xs: 'px-2 py-1',
       sm: 'px-3 py-1.5',
-      md: 'px-4 py-2',
+      md: 'p-3',
       lg: 'px-5 py-2.5',
     },
     selected: {
@@ -39,7 +39,7 @@ const tagVariants = cva('flex-row items-center justify-center rounded-full borde
     {
       variant: 'default',
       selected: true,
-      class: 'border-primary-500',
+      class: 'border-primary-500 bg-primary-300',
     },
     // Primary variant
     {
@@ -107,13 +107,13 @@ const textVariants = cva('', {
     {
       variant: 'default',
       selected: true,
-      class: 'text-primary-500',
+      class: 'text-primary-600',
     },
     // Primary variant text colors
     {
       variant: 'primary',
       selected: false,
-      class: 'text-primary-700',
+      class: 'text-primary-600',
     },
     {
       variant: 'primary',
@@ -151,8 +151,7 @@ export interface BySelectableTagProps extends VariantProps<typeof tagVariants> {
   onPress?: () => void;
   disabled?: boolean;
   className?: string;
-  icon?: React.ReactNode;
-  showCheckmark?: boolean;
+  clickable?: boolean;
 }
 
 export default function BySelectableTag({
@@ -163,45 +162,22 @@ export default function BySelectableTag({
   variant = 'default',
   size = 'md',
   className = '',
-  icon,
-  showCheckmark = false,
+  clickable = true,
 }: BySelectableTagProps) {
   return (
     <TouchableOpacity
       className={clsx(tagVariants({ variant, size, selected, disabled }), className)}
-      onPress={onPress}
+      onPress={clickable ? onPress : undefined}
       disabled={disabled}
       activeOpacity={disabled ? 1 : 0.7}
     >
-      {/* Optional icon */}
-      {icon && <View className={clsx('mr-1.5', size === 'xs' && 'mr-1')}>{icon}</View>}
-
-      {/* Label */}
       <ByText className={textVariants({ variant, size, selected })} numberOfLines={1}>
         {label}
       </ByText>
-
-      {/* Optional checkmark for selected state */}
-      {showCheckmark && selected && (
-        <View className={clsx('ml-1.5', size === 'xs' && 'ml-1')}>
-          <ByText
-            className={clsx(
-              'text-primary-500',
-              size === 'xs' && 'text-xs',
-              size === 'sm' && 'text-sm',
-              size === 'md' && 'text-sm',
-              size === 'lg' && 'text-base'
-            )}
-          >
-            ✓
-          </ByText>
-        </View>
-      )}
     </TouchableOpacity>
   );
 }
 
-// Utility component for rendering multiple tags
 export interface BySelectableTagGroupProps {
   tags: {
     id: string;
@@ -223,7 +199,6 @@ export function BySelectableTagGroup({
   onTagPress,
   variant = 'default',
   size = 'md',
-  showCheckmark = false,
   className = '',
 }: BySelectableTagGroupProps) {
   return (
@@ -236,8 +211,6 @@ export function BySelectableTagGroup({
           disabled={tag.disabled}
           variant={variant}
           size={size}
-          icon={tag.icon}
-          showCheckmark={showCheckmark}
           onPress={() => onTagPress?.(tag.id)}
         />
       ))}
