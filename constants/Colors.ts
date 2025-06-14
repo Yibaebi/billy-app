@@ -16,7 +16,7 @@ const Colors = {
     base: '#1F2614',
     100: '#FBFCFA',
     200: '#F4F5F2',
-    300: '#ECDEA',
+    300: '#ECEDEA',
     400: '#D7D9D2',
     500: '#ACB3A3',
     600: '#7B8074',

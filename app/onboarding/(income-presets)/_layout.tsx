@@ -50,7 +50,7 @@ export default function OnboardingPresetsLayout() {
     if (pathname.includes('add-expenses')) {
       return [
         { label: 'Back', route: 'income-add' as const, type: 'primary-light' as const },
-        { label: 'Next', route: 'add-expenses' as const, type: 'primary' as const },
+        { label: 'Next', route: 'onboarding-complete' as const, type: 'primary' as const },
       ];
     }
 

@@ -142,7 +142,6 @@ export default function OnboardingTrackInterest() {
                   <BySelectableTag
                     key={subcategory.id}
                     label={subcategory.name}
-                    showCheckmark={subcategory.isSelected}
                     selected={subcategory.isSelected}
                     onPress={() => handleToggleCategory(category.id, subcategory.id)}
                   />
