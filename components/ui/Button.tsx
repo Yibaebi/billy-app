@@ -100,7 +100,7 @@ const ByButton: React.FC<ByButtonProps> = ({
     <TouchableOpacity
       className={clsx(
         buttonVariants({
-          variant: isDisabled ? undefined : variant,
+          variant,
           size,
           fullWidth,
           disabled: isDisabled,

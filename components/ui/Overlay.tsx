@@ -1,5 +1,5 @@
 import { BlurView } from 'expo-blur';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Modal, TouchableOpacity, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -74,6 +74,7 @@ export const SlideUpOverlay: React.FC<SlideUpOverlayProps> = ({
 }) => {
   const slideAnim = useRef(new Animated.Value(height)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
+
   const [isModalVisible, setIsModalVisible] = useState(visible);
   const [isClosing, setIsClosing] = useState(false);
 
@@ -177,7 +178,7 @@ export const SlideUpOverlay: React.FC<SlideUpOverlayProps> = ({
           {/* Handle */}
           <View className="w-[40px] h-1 bg-secondary-500 self-center mt-2.5 rounded-sm" />
 
-          <Animated.View className="bg-white rounded-lg p-5">{children}</Animated.View>
+          <Animated.View className="p-5 bg-white rounded-lg">{children}</Animated.View>
         </Animated.View>
       </View>
     </Modal>
@@ -273,76 +274,93 @@ interface BlurOverlayProps {
   onClose: () => void;
   children: React.ReactNode;
   blurType?: 'light' | 'dark' | 'regular';
+  height?: number;
 }
 
 export const BlurOverlay: React.FC<BlurOverlayProps> = ({
   visible,
   onClose,
   children,
-  blurType = 'light',
+  height = SCREEN_HEIGHT * 0.6,
+  blurType = 'dark',
 }) => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
+  const [isModalVisible, setIsModalVisible] = useState(visible);
 
+  // Open Animation
+  const animateIn = useCallback(() => {
+    const scaleIn = Animated.spring(scaleAnim, {
+      toValue: 1,
+      tension: 100,
+      friction: 8,
+      useNativeDriver: true,
+    });
+
+    const opacityIn = Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    });
+
+    Animated.parallel([scaleIn, opacityIn]).start();
+  }, [scaleAnim, opacityAnim]);
+
+  // Close Animation
+  const animateOut = useCallback(() => {
+    const scaleOut = Animated.timing(scaleAnim, {
+      toValue: 0.8,
+      duration: 200,
+      useNativeDriver: true,
+    });
+
+    const opacityOut = Animated.timing(opacityAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    });
+
+    Animated.parallel([scaleOut, opacityOut]).start(() => setIsModalVisible(false));
+  }, [scaleAnim, opacityAnim]);
+
+  // Close Action
+  const handleClose = useCallback(() => {
+    animateOut();
+    setTimeout(() => onClose(), 200);
+  }, [animateOut, onClose]);
+
+  // Effect to handle modal visibility and animation
   useEffect(() => {
     if (visible) {
-      const scaleIn = Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 100,
-        friction: 8,
-        useNativeDriver: true,
-      });
+      setIsModalVisible(true);
+      requestAnimationFrame(() => animateIn());
 
-      const opacityIn = Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      });
-
-      Animated.parallel([scaleIn, opacityIn]).start();
-    } else {
-      const scaleOut = Animated.timing(scaleAnim, {
-        toValue: 0.8,
-        duration: 200,
-        useNativeDriver: true,
-      });
-
-      const opacityOut = Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      });
-
-      Animated.parallel([scaleOut, opacityOut]).start();
+      console.log('visible', visible);
+    } else if (isModalVisible) {
+      handleClose();
+      console.log('modal closed', isModalVisible);
     }
-  }, [visible, scaleAnim, opacityAnim]);
+  }, [visible, isModalVisible, animateIn, handleClose]);
 
-  if (!visible) return null;
+  if (!isModalVisible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="none">
-      <Animated.View
-        style={{
-          flex: 1,
-          opacity: opacityAnim,
-        }}
-      >
+    <Modal transparent visible={isModalVisible} animationType="none" hardwareAccelerated>
+      <Animated.View style={{ flex: 1, opacity: opacityAnim }}>
         <BlurView
           intensity={80}
           tint={blurType}
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height }}
         >
           <TouchableOpacity
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-            onPress={onClose}
+            onPress={handleClose}
+            activeOpacity={1}
           />
 
           <Animated.View
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: 20,
-              padding: 20,
-              margin: 20,
+              width: '100%',
               maxWidth: SCREEN_WIDTH * 0.9,
               transform: [{ scale: scaleAnim }],
             }}

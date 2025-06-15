@@ -10,6 +10,7 @@ export default function ByTextInput(props: TextInputProps) {
       className={clsx(
         `px-3 font-nunito text-secondary-base
         text-lg rounded-[12px] border border-secondary-400 h-[48px]
+        bg-secondary-200
         disabled:opacity-50 w-full`,
         props.className
       )}

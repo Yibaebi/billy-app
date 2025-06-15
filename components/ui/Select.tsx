@@ -153,8 +153,8 @@ export default function BySelect<T extends BySelectOption>({
       </View>
 
       {isSelected && (
-        <View className="w-6 h-6 bg-primary-500 rounded-full items-center justify-center ml-3">
-          <ByText className="text-white text-xs">✓</ByText>
+        <View className="items-center justify-center w-6 h-6 ml-3 rounded-full bg-primary-500">
+          <ByText className="text-xs text-white">✓</ByText>
         </View>
       )}
     </TouchableOpacity>
@@ -162,8 +162,8 @@ export default function BySelect<T extends BySelectOption>({
 
   // Empty state component
   const renderEmptyState = () => (
-    <View className="flex-1 items-center justify-center py-16">
-      <ByText className="text-4xl mb-3">📋</ByText>
+    <View className="items-center justify-center flex-1 py-16">
+      <ByText className="mb-3 text-4xl">📋</ByText>
       <ByText fontWeight="semibold" size="lg" className="mb-1">
         {emptyMessage}
       </ByText>
@@ -228,7 +228,7 @@ export default function BySelect<T extends BySelectOption>({
 
             <TouchableOpacity
               onPress={handleClose}
-              className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100"
               activeOpacity={0.7}
             >
               <ByText className="opacity-60">✕</ByText>
@@ -246,13 +246,13 @@ export default function BySelect<T extends BySelectOption>({
                   className="pl-12 bg-white"
                 />
 
-                <View className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <View className="absolute transform -translate-y-1/2 left-4 top-1/2">
                   <ByText className="opacity-50">🔍</ByText>
                 </View>
               </View>
 
               {/* Results counter */}
-              <View className="mt-3 px-1">
+              <View className="px-1 mt-3">
                 <ByText fontColor="secondary" size="sm" className="opacity-70">
                   {filteredOptions.length === options.length
                     ? `${options.length} options`

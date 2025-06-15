@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { TouchableOpacity, View, ViewProps } from 'react-native';
 
+import Colors from '@/constants/Colors';
 import CheckmarkIcon from '../svgs/CheckmarkIcon';
 import ByText, { ByTextProps } from './Text';
 
@@ -16,9 +17,6 @@ const containerVariants = cva(
         false: '',
       },
     },
-    defaultVariants: {
-      disabled: false,
-    },
   }
 );
 
@@ -27,21 +25,16 @@ const checkboxVariants = cva('border flex items-center justify-center', {
   variants: {
     shape: {
       circle: 'rounded-full',
-      square: 'rounded-md',
+      square: 'rounded-[7px]',
     },
     checked: {
-      true: 'border-primary-500 bg-primary-500',
-      false: 'border-neutral-300 bg-neutral-200',
+      true: 'border-2 border-primary-500 bg-primary-200',
+      false: 'border-2 border-neutral-300 bg-neutral-200',
     },
     disabled: {
       true: 'opacity-50',
       false: '',
     },
-  },
-  defaultVariants: {
-    shape: 'circle',
-    checked: false,
-    disabled: false,
   },
 });
 
@@ -63,7 +56,7 @@ export default function ByCheckbox({
   onToggle,
   labelProps,
   className,
-  shape = 'circle',
+  shape = 'square',
   disableAnimation = false,
   ...props
 }: ByCheckboxProps) {
@@ -75,8 +68,8 @@ export default function ByCheckbox({
       return (
         <CheckmarkIcon
           key={checked ? 'checked' : 'unchecked'}
-          size={16}
-          color="white"
+          size={12}
+          color={Colors['primary'][600]}
           animate={!disableAnimation}
         />
       );
