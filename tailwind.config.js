@@ -49,6 +49,9 @@ module.exports = {
           700: '#4A4D46',
           800: '#223306',
         },
+
+        // Standard error
+        error: '#DE1135',
       },
     },
   },

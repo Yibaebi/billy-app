@@ -35,7 +35,7 @@ const Colors = {
   accent: '#ACB3A3', // Accent color
 
   // Standard error
-  error: '#B00020',
+  error: '#DE1135',
 
   // Common color shortcuts
   white: '#FFFFFF',
