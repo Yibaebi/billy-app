@@ -27,10 +27,13 @@ export default function OnboardingPresetsLayout() {
     return currentStep ? ONBOARDING_STEPS[currentStep] : 0;
   };
 
+  // Check if current route is income preset route
+  const isIncomePresetRoute = pathname.includes('income-preset');
+
   // Get button text based on the current step
   const routeNavCTAProps = useMemo(() => {
-    if (pathname.includes('income-preset')) {
-      return [{ label: 'Next', route: 'track-interest' as const, type: 'primary' as const }];
+    if (isIncomePresetRoute) {
+      return null;
     }
 
     if (pathname.includes('track-interest')) {
@@ -55,7 +58,7 @@ export default function OnboardingPresetsLayout() {
     }
 
     return [{ label: 'Next', route: 'track-interest' as const, type: 'primary' as const }];
-  }, [pathname]);
+  }, [pathname, isIncomePresetRoute]);
 
   return (
     <ByStack
@@ -77,21 +80,25 @@ export default function OnboardingPresetsLayout() {
         <Slot />
       </ScrollView>
 
-      <ByStack
-        justifyContent="center"
-        alignItems="center"
-        className="absolute bottom-0 flex w-full gap-4 px-12 pt-6 pb-12 bg-secondary-100"
-      >
-        {routeNavCTAProps.map(({ label, route, type }) => (
-          <ByButton
-            key={`${route}-${label}`}
-            variant={type}
-            title={label}
-            onPress={() => router.push(`/onboarding/${route}`)}
-            className={clsx(routeNavCTAProps.length === 2 ? 'w-1/2' : 'w-full')}
-          />
-        ))}
-      </ByStack>
+      {routeNavCTAProps && (
+        <ByStack
+          direction={isIncomePresetRoute ? 'column' : 'row'}
+          justifyContent="center"
+          alignItems="center"
+          gap={16}
+          className={clsx('absolute bottom-0 w-full px-12 pt-6 pb-12 bg-secondary-100')}
+        >
+          {routeNavCTAProps.map(({ label, route, type }) => (
+            <ByButton
+              key={`${route}-${label}`}
+              variant={type}
+              title={label}
+              onPress={() => router.push(`/onboarding/${route}`)}
+              className={clsx(routeNavCTAProps.length === 2 ? 'w-1/2' : 'w-full')}
+            />
+          ))}
+        </ByStack>
+      )}
     </ByStack>
   );
 }

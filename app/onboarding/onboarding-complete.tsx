@@ -6,6 +6,10 @@ import ByButton from '@/components/ui/Button';
 import BySelectableTag from '@/components/ui/SelectableTag';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
+import { getScreenHeight, getStatusBarHeight } from '@/utils/helpers';
+
+const STATUS_BAR_HEIGHT = getStatusBarHeight();
+const SCREEN_HEIGHT = getScreenHeight();
 
 const SELECTED_EXPENSES_CATEGORIES = [
   {
@@ -42,7 +46,11 @@ const SELECTED_EXPENSES_CATEGORIES = [
 
 export default function OnboardingComplete() {
   return (
-    <ByStack direction="column" className="w-full h-full">
+    <ByStack
+      direction="column"
+      className="w-full"
+      style={{ height: SCREEN_HEIGHT - STATUS_BAR_HEIGHT }}
+    >
       <ByStack className="absolute top-0 z-10 w-full pb-4 bg-secondary-100 pl-7">
         <TouchableOpacity
           className="rounded-full p-2.5 pr-2 bg-secondary-300"
@@ -52,11 +60,7 @@ export default function OnboardingComplete() {
         </TouchableOpacity>
       </ByStack>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="mt-[120px] px-7"
-        className="w-full min-h-screen"
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <ByStack direction="column" className="w-full mb-12">
           <ByText fontWeight="bold" size="3xl">
             🎉 You&apos;re All Set!
@@ -65,7 +69,7 @@ export default function OnboardingComplete() {
           <ByText size="lg">Here’s a quick summary before we begin.</ByText>
         </ByStack>
 
-        <ByStack direction="column" className="w-full h-[400px] mb-6 bg-[#460957] rounded-xl">
+        <ByStack direction="column" className="w-full h-[385px] mb-6 bg-[#460957] rounded-xl">
           <ByText>Expense Categories</ByText>
         </ByStack>
 
@@ -89,7 +93,7 @@ export default function OnboardingComplete() {
       <ByStack
         direction="row"
         alignItems="center"
-        className="absolute bottom-0 w-full pt-6 pb-12 px-7 bg-secondary-100"
+        className="fixed bottom-0 w-full pt-6 pb-12 -translate-y-1/2 bg-red-100 px-7"
       >
         <ByButton
           variant="primary"
