@@ -3,19 +3,20 @@ import clsx from 'clsx';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 
-import ByArrowDown from '@/components/svgs/ArrowDown';
 import { SlideUpOverlay } from '@/components/ui/Overlay';
+import { getIsAndroid } from '@/utils/helpers';
+
+import BySearchIcon from '@/components/svgs/SearchIcon';
 import ByText from '@/components/ui/Text';
 import ByInput from '@/components/ui/TextInput';
 import COUNTRIES from '@/constants/Countries';
-import { getIsAndroid } from '@/utils/helpers';
 
 import { IconSymbol } from '../IconSymbol';
 import CountrySelectItem from './countryItem';
 import CountrySelectEmptyState from './empty';
 
 // CVA variants for the country select container
-const containerVariants = cva('border rounded-full p-2 flex-row items-center gap-2', {
+const containerVariants = cva('border rounded-full p-2 px-4 flex-row items-center gap-3 bg-white', {
   variants: {
     variant: {
       default: 'border-neutral-300 bg-white',
@@ -67,7 +68,7 @@ export default function CountrySelect({
   variant = 'default',
   className = '',
   showDialCode = false,
-  searchPlaceholder = 'Search countries...',
+  searchPlaceholder = 'Type a currency/country',
 }: CountrySelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -161,10 +162,14 @@ export default function CountrySelect({
         activeOpacity={0.7}
       >
         {value ? (
-          <View className="h-full overflow-hidden flex-row items-center justify-center rounded-full">
+          <View className="flex-row gap-2 justify-center items-center h-full rounded-full">
+            <ByText size="base" fontWeight="bold">
+              {value.currency}
+            </ByText>
+
             <ByText
               className={clsx(
-                'w-6 h-6',
+                'w-6 h-6 min-w-6 min-h-6',
                 getIsAndroid() ? 'text-2xl leading-none' : 'text-[24px]/[28px]'
               )}
             >
@@ -172,23 +177,17 @@ export default function CountrySelect({
             </ByText>
           </View>
         ) : (
-          <View className="w-6 h-6 rounded-full bg-neutral-100 items-center justify-center"></View>
+          <View className="justify-center items-center w-6 h-6 rounded-full bg-neutral-100"></View>
         )}
-
-        <ByArrowDown />
       </TouchableOpacity>
 
-      <SlideUpOverlay visible={isOpen} onClose={handleClose} height={650}>
-        <View className="max-h-[620px]">
+      <SlideUpOverlay visible={isOpen} onClose={handleClose} height={400}>
+        <View className="h-[400px] p-6 bg-white rounded-[36px]">
           <View className="mb-6">
-            <View className="flex-row items-center justify-between mb-4">
-              <ByText fontWeight="bold" size="xl">
-                Select Country
-              </ByText>
-
+            <View className="flex-row justify-end items-center mb-4">
               <TouchableOpacity
                 onPress={handleClose}
-                className="p-2 rounded-full bg-neutral-100 flex items-center justify-center"
+                className="flex justify-center items-center p-2 rounded-full bg-neutral-100"
                 activeOpacity={0.7}
               >
                 <IconSymbol name="xmark" size={14} color="black" />
@@ -200,18 +199,18 @@ export default function CountrySelect({
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholder={searchPlaceholder}
-                className="pl-12 "
+                className="pl-12"
               />
 
               <View className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                <ByText className="opacity-50">🔍</ByText>
+                <BySearchIcon />
               </View>
             </View>
 
-            <View className="mt-3 px-1">
-              <ByText fontColor="secondary" size="sm" className="opacity-70">
+            <View className="px-1 mt-3">
+              <ByText fontWeight="bold" fontColor="secondary" size="sm" className="opacity-70">
                 {filteredCountries.length === COUNTRIES.length
-                  ? `${COUNTRIES.length} countries`
+                  ? `${COUNTRIES.length} Currencies`
                   : `${filteredCountries.length} of ${COUNTRIES.length} countries`}
               </ByText>
             </View>

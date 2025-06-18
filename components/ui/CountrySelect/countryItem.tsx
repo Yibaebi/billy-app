@@ -14,12 +14,7 @@ interface CountrySelectItemProps {
 }
 
 // CountrySelectItem Component
-export default function CountrySelectItem({
-  item,
-  value,
-  handleSelect,
-  showDialCode,
-}: CountrySelectItemProps) {
+export default function CountrySelectItem({ item, value, handleSelect }: CountrySelectItemProps) {
   const isSelected = value?.code === item.code;
 
   return (
@@ -31,7 +26,7 @@ export default function CountrySelectItem({
         isSelected && 'bg-primary-50'
       )}
     >
-      <View className="w-10 h-10 rounded-full bg-neutral-100 items-center justify-center mr-3">
+      <View className="justify-center items-center mr-3 w-10 h-10 rounded-full bg-neutral-100">
         <ByText className="text-xl">{item.flag}</ByText>
       </View>
 
@@ -51,7 +46,7 @@ export default function CountrySelectItem({
       </View>
 
       {isSelected && (
-        <View className="w-6 h-6 bg-primary-500 rounded-full items-center justify-center">
+        <View className="justify-center items-center w-6 h-6 rounded-full bg-primary-500">
           <IconSymbol name="checkmark.circle.fill" size={16} color="white" />
         </View>
       )}
