@@ -1,12 +1,17 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import clsx from 'clsx';
-import React, { useMemo, useState } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { FlatList, Modal, TouchableOpacity, View } from 'react-native';
 
 import ByArrowDown from '@/components/svgs/ArrowDown';
-import { SlideUpOverlay } from './Overlay';
+import Colors from '@/constants/Colors';
+import { getIsAndroid, getIsIOS, getScreenHeight } from '@/utils/helpers';
+
 import ByText from './Text';
-import ByInput from './TextInput';
+
+const IS_ANDROID = getIsAndroid();
+const IS_IOS = getIsIOS();
+const SCREEN_HEIGHT = getScreenHeight();
 
 // CVA variants for the select container
 const containerVariants = cva(
@@ -45,19 +50,22 @@ export interface BySelectOption {
 }
 
 interface BySelectProps<T extends BySelectOption> extends VariantProps<typeof containerVariants> {
-  options: (T | null | undefined)[];
+  options: T[];
   value?: T | null;
   onSelect?: (option: T) => void;
   placeholder?: string;
-  searchable?: boolean;
-  searchPlaceholder?: string;
   disabled?: boolean;
   className?: string;
   overlayTitle?: string;
   emptyMessage?: string;
-  renderOption?: (option: BySelectOption, isSelected: boolean) => React.ReactElement;
   error?: boolean;
   errorMessage?: string;
+
+  renderOption?: (
+    option: BySelectOption,
+    isSelected: boolean,
+    isLast: boolean
+  ) => React.ReactElement;
 }
 
 export default function BySelect<T extends BySelectOption>({
@@ -65,64 +73,62 @@ export default function BySelect<T extends BySelectOption>({
   value,
   onSelect,
   placeholder = 'Select an option',
-  searchable = false,
-  searchPlaceholder = 'Search options...',
   disabled = false,
   variant = 'default',
   size = 'md',
   className = '',
-  overlayTitle = 'Select Option',
   emptyMessage = 'No options found',
   renderOption,
 }: BySelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const triggerRef = useRef<View>(null);
 
-  // Filter options based on search query
-  const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return options as T[];
-    }
-
-    // Filter options based on search query
-    const query = searchQuery.toLowerCase();
-
-    return options.filter(option => {
-      const label = option?.label.toLowerCase();
-      const value = option?.value.toLowerCase();
-      const description = option?.description?.toLowerCase();
-
-      return (
-        label?.includes(query) ||
-        value?.includes(query) ||
-        (description && description.includes(query))
-      );
-    }) as T[];
-  }, [options, searchQuery]);
+  const [dropdownLayout, setDropdownLayout] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    showAbove: false,
+  });
 
   const handleSelect = (option: T) => {
     onSelect?.(option);
     setIsOpen(false);
-    setSearchQuery('');
   };
 
   const handleOpen = () => {
     if (!disabled) {
-      setIsOpen(true);
+      // Measure the trigger position
+      triggerRef.current?.measure((x, y, width, height, pageX, pageY) => {
+        const dropdownMaxHeight = 400;
+        const spaceBelow = SCREEN_HEIGHT - (pageY + height);
+        const spaceAbove = pageY;
+
+        // Show above if there's not enough space below and there's more space above
+        const showAbove = spaceBelow < dropdownMaxHeight && spaceAbove > spaceBelow;
+
+        setDropdownLayout({
+          x: pageX,
+          y: showAbove ? pageY - 8 - (IS_ANDROID ? height : 0) : pageY + 8 + (IS_IOS ? height : 0),
+          width: width,
+          height: height,
+          showAbove: showAbove,
+        });
+
+        setIsOpen(true);
+      });
     }
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-    setSearchQuery('');
-  };
+  const handleClose = () => setIsOpen(false);
 
   // Default option renderer
-  const defaultRenderOption = (option: T, isSelected: boolean) => (
+  const defaultRenderOption = (option: T, isSelected: boolean, isLast: boolean) => (
     <TouchableOpacity
       onPress={() => handleSelect(option)}
       className={clsx(
         'flex-row items-center py-4 border-b border-secondary-300',
+        isLast && 'border-b-0',
         isSelected && 'bg-primary-50',
         option.disabled && 'opacity-50'
       )}
@@ -153,7 +159,7 @@ export default function BySelect<T extends BySelectOption>({
       </View>
 
       {isSelected && (
-        <View className="items-center justify-center w-6 h-6 ml-3 rounded-full bg-primary-500">
+        <View className="justify-center items-center ml-3 w-6 h-6 rounded-full bg-primary-500">
           <ByText className="text-xs text-white">✓</ByText>
         </View>
       )}
@@ -162,30 +168,30 @@ export default function BySelect<T extends BySelectOption>({
 
   // Empty state component
   const renderEmptyState = () => (
-    <View className="items-center justify-center flex-1 py-16">
+    <View className="flex-1 justify-center items-center py-16">
       <ByText className="mb-3 text-4xl">📋</ByText>
+
       <ByText fontWeight="semibold" size="lg" className="mb-1">
         {emptyMessage}
-      </ByText>
-      <ByText fontColor="secondary" size="sm" className="text-center opacity-70">
-        {searchable && searchQuery ? 'Try adjusting your search terms' : 'No options available'}
       </ByText>
     </View>
   );
 
-  const renderOptionItem = ({ item }: { item: T }): React.ReactElement => {
+  const renderOptionItem = ({ item, index }: { item: T; index: number }): React.ReactElement => {
     const isSelected = value?.value === item.value;
+    const isLast = index === options.length - 1;
 
     if (renderOption) {
-      return renderOption(item, isSelected);
+      return renderOption(item, isSelected, isLast);
     }
 
-    return defaultRenderOption(item, isSelected);
+    return defaultRenderOption(item, isSelected, isLast);
   };
 
   return (
-    <>
+    <View className="relative w-full">
       <TouchableOpacity
+        ref={triggerRef}
         className={clsx(containerVariants({ variant, disabled, size }), className)}
         onPress={handleOpen}
         disabled={disabled}
@@ -205,83 +211,64 @@ export default function BySelect<T extends BySelectOption>({
               )}
             </View>
           ) : (
-            <ByText fontColor="secondary" className="opacity-60">
+            <ByText fontColor="secondary" className="opacity-60 text-secondary-500">
               {placeholder}
             </ByText>
           )}
         </View>
 
         {/* Arrow down icon */}
-        <View className="ml-3">
-          <ByArrowDown color={disabled ? '#9CA3AF' : '#6B7280'} />
+        <View
+          className={clsx('ml-3', disabled ? 'opacity-50' : '')}
+          style={{
+            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
+          }}
+        >
+          <ByArrowDown />
         </View>
       </TouchableOpacity>
 
-      {/* Selection overlay */}
-      <SlideUpOverlay visible={isOpen} onClose={handleClose} height={700}>
-        {/* Header */}
-        <View className="mb-2">
-          <View className="flex-row items-center justify-between mb-4">
-            <ByText fontWeight="bold" size="xl">
-              {overlayTitle}
-            </ByText>
-
-            <TouchableOpacity
-              onPress={handleClose}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100"
-              activeOpacity={0.7}
-            >
-              <ByText className="opacity-60">✕</ByText>
+      {/* Dropdown */}
+      <Modal visible={isOpen} transparent={true} animationType="none" onRequestClose={handleClose}>
+        <TouchableOpacity onPress={handleClose} activeOpacity={1} className="w-full h-full">
+          <View
+            className="absolute bg-white rounded-xl border drop-shadow-sm border-secondary-200"
+            style={{
+              top: dropdownLayout.y,
+              left: dropdownLayout.x,
+              width: dropdownLayout.width,
+              maxHeight: 400,
+              shadowColor: Colors.secondary[500],
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.08,
+              shadowRadius: 100,
+              elevation: 10,
+              transform: dropdownLayout.showAbove ? [{ translateY: '-100%' }] : undefined,
+            }}
+          >
+            <TouchableOpacity activeOpacity={1} className="px-3">
+              <FlatList
+                data={options}
+                keyExtractor={item => item.value}
+                renderItem={renderOptionItem}
+                showsVerticalScrollIndicator={false}
+                initialNumToRender={15}
+                maxToRenderPerBatch={20}
+                windowSize={10}
+                removeClippedSubviews={true}
+                scrollEventThrottle={16}
+                ListEmptyComponent={renderEmptyState}
+                getItemLayout={(_data, index) => ({
+                  length: 60,
+                  offset: 60 * index,
+                  index,
+                })}
+                style={{ maxHeight: 320 }}
+              />
             </TouchableOpacity>
           </View>
-
-          {/* Search input */}
-          {searchable && (
-            <>
-              <View className="relative">
-                <ByInput
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  placeholder={searchPlaceholder}
-                  className="pl-12 bg-white"
-                />
-
-                <View className="absolute transform -translate-y-1/2 left-4 top-1/2">
-                  <ByText className="opacity-50">🔍</ByText>
-                </View>
-              </View>
-
-              {/* Results counter */}
-              <View className="px-1 mt-3">
-                <ByText fontColor="secondary" size="sm" className="opacity-70">
-                  {filteredOptions.length === options.length
-                    ? `${options.length} options`
-                    : `${filteredOptions.length} of ${options.length} options`}
-                </ByText>
-              </View>
-            </>
-          )}
-        </View>
-
-        {/* Options list */}
-        <FlatList
-          data={filteredOptions}
-          keyExtractor={item => item.value}
-          renderItem={renderOptionItem}
-          showsVerticalScrollIndicator={false}
-          initialNumToRender={15}
-          maxToRenderPerBatch={20}
-          windowSize={10}
-          removeClippedSubviews={true}
-          scrollEventThrottle={16}
-          ListEmptyComponent={renderEmptyState}
-          getItemLayout={(_data, index) => ({
-            length: 60,
-            offset: 60 * index,
-            index,
-          })}
-        />
-      </SlideUpOverlay>
-    </>
+        </TouchableOpacity>
+      </Modal>
+    </View>
   );
 }
