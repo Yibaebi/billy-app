@@ -28,23 +28,12 @@ export default function OnboardingTrackInterest() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      className="w-full h-full gap-4 px-12"
+      className="gap-4 px-12 w-full h-full"
     >
-      {/* Title and description */}
-      <ByStack
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        className="gap-1 mb-4"
-      >
-        <ByText textAlign="center" fontWeight="bold" size="2xl">
-          What would you like to track with Billy?
-        </ByText>
-
-        <ByText className="text-center max-w-[300px]">
-          Choose what you&apos;d like to keep an eye on.
-        </ByText>
-      </ByStack>
+      {/* Title */}
+      <ByText textAlign="center" fontWeight="bold" size="2xl" className="mb-4">
+        What would you like to track with Billy?
+      </ByText>
 
       {/* Sources list */}
       <View className="flex-col mb-4">
@@ -52,14 +41,13 @@ export default function OnboardingTrackInterest() {
           direction="column"
           alignItems="center"
           justifyContent="center"
-          className="w-full gap-4"
+          className="gap-4 w-full"
         >
           {interests.map(option => (
-            <View key={option.id} className="relative flex w-full">
+            <View key={option.id} className="flex relative w-full">
               <ByCheckbox
                 label={option.label}
                 checked={option.checked}
-                shape="circle"
                 onToggle={() => handleToggleInterest(option.id)}
               />
             </View>
