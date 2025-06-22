@@ -48,9 +48,9 @@ export default function ByAnimatedProgressBar({
       direction="column"
       alignItems="center"
       justifyContent="center"
-      className={clsx('absolute top-0 gap-2 w-full px-12', className)}
+      className={clsx('absolute top-0 gap-2 px-12 py-4 w-full', className)}
     >
-      <ByStack direction="row" alignItems="center" justifyContent="center" className="w-full gap-2">
+      <ByStack direction="row" alignItems="center" justifyContent="center" className="gap-2 w-full">
         <ByCheckCircle fill={Colors.primary[500]} />
 
         <View className="flex w-full h-[12px] bg-primary-100 rounded-full">

@@ -6,10 +6,6 @@ import ByButton from '@/components/ui/Button';
 import BySelectableTag from '@/components/ui/SelectableTag';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
-import { getScreenHeight, getStatusBarHeight } from '@/utils/helpers';
-
-const STATUS_BAR_HEIGHT = getStatusBarHeight();
-const SCREEN_HEIGHT = getScreenHeight();
 
 const SELECTED_EXPENSES_CATEGORIES = [
   {
@@ -46,12 +42,8 @@ const SELECTED_EXPENSES_CATEGORIES = [
 
 export default function OnboardingComplete() {
   return (
-    <ByStack
-      direction="column"
-      className="w-full"
-      style={{ height: SCREEN_HEIGHT - STATUS_BAR_HEIGHT }}
-    >
-      <ByStack className="absolute top-0 z-10 w-full pb-4 bg-secondary-100 pl-7">
+    <ByStack direction="column" className="relative h-full">
+      <ByStack className="absolute top-0 z-10 pb-4 pl-7 w-full bg-secondary-100">
         <TouchableOpacity
           className="rounded-full p-2.5 pr-2 bg-secondary-300"
           onPress={() => router.push('/onboarding/onboarding-complete')}
@@ -60,8 +52,8 @@ export default function OnboardingComplete() {
         </TouchableOpacity>
       </ByStack>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <ByStack direction="column" className="w-full mb-12">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="py-[100px] px-6">
+        <ByStack direction="column" className="mb-12 w-full">
           <ByText fontWeight="bold" size="3xl">
             🎉 You&apos;re All Set!
           </ByText>
@@ -69,16 +61,16 @@ export default function OnboardingComplete() {
           <ByText size="lg">Here’s a quick summary before we begin.</ByText>
         </ByStack>
 
-        <ByStack direction="column" className="w-full h-[385px] mb-6 bg-[#460957] rounded-xl">
-          <ByText>Expense Categories</ByText>
+        <ByStack direction="column" className="w-full h-[245px] mb-6 bg-[#460957] rounded-xl">
+          <ByText className="text-secondary-100">Expense Categories</ByText>
         </ByStack>
 
-        <ByStack direction="column" className="w-full h-full mb-12">
+        <ByStack direction="column" className="mb-12 w-full h-full">
           <ByText fontWeight="bold" size="lg" className="mb-3">
             Expense Categories
           </ByText>
 
-          <ByStack direction="row" className="flex-wrap w-full h-full gap-2">
+          <ByStack direction="row" className="flex-wrap gap-2 w-full h-full">
             {SELECTED_EXPENSES_CATEGORIES.map(expense => (
               <BySelectableTag
                 key={expense.id}
@@ -91,9 +83,11 @@ export default function OnboardingComplete() {
       </ScrollView>
 
       <ByStack
-        direction="row"
+        direction="column"
+        justifyContent="center"
         alignItems="center"
-        className="fixed bottom-0 w-full pt-6 pb-12 -translate-y-1/2 bg-red-100 px-7"
+        gap={16}
+        className="absolute bottom-0 left-0 px-6 pt-6 pb-12 w-full bg-secondary-100"
       >
         <ByButton
           variant="primary"

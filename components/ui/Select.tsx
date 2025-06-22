@@ -15,7 +15,7 @@ const SCREEN_HEIGHT = getScreenHeight();
 
 // CVA variants for the select container
 const containerVariants = cva(
-  'border rounded-xl px-3 py-3.5 flex-row items-center justify-between w-full',
+  'border rounded-xl px-3 py-3.5 flex-row items-center justify-between w-full h-[48px]',
   {
     variants: {
       variant: {

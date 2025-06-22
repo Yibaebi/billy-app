@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import CountrySelect, { Country } from '@/components/ui/CountrySelect/index';
 import BySelect from '@/components/ui/Select';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
 import ByTextInput from '@/components/ui/TextInput';
+import COUNTRIES from '@/constants/Countries';
+import clsx from 'clsx';
 
 // Types
 type IncomeGroup = {
@@ -31,8 +33,15 @@ const FREQUENCY_OPTIONS = [
 ];
 
 export default function OnboardingIncomeAdd() {
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(
+    COUNTRIES.find(c => c.code === 'NG') || null
+  );
+
   const [incomeGroups, setIncomeGroups] = useState<IncomeGroup[]>(DEFAULT_OPTIONS);
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const selectedCurrency = selectedCountry?.currency;
+
+  const selectedCurrencyDisplay =
+    Number(selectedCurrency?.length) > 1 ? selectedCurrency?.slice(0, 3) : selectedCurrency;
 
   // Toggle source
   const handleChangeIncome = (income: IncomeGroup) =>
@@ -45,29 +54,30 @@ export default function OnboardingIncomeAdd() {
     );
 
   return (
-    <ByStack direction="column" className="w-full h-full gap-4 pt-[100px] px-12">
-      {/* Title and description */}
-      <ByStack direction="column" alignItems="flex-start" className="gap-3 mb-4">
-        <ByStack alignItems="center" className="gap-2">
-          <ByText textAlign="center" fontWeight="bold" size="2xl">
-            Input Income
-          </ByText>
+    <ByStack direction="column" className="gap-4 px-12 w-full h-full">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pt-[100px] pb-12">
+        {/* Title and description */}
+        <ByStack direction="column" alignItems="flex-start" className="gap-3 mb-4">
+          <ByStack alignItems="center" className="gap-2">
+            <ByText textAlign="center" fontWeight="bold" size="2xl">
+              Input Income
+            </ByText>
 
-          <CountrySelect
-            value={selectedCountry}
-            onSelect={setSelectedCountry}
-            placeholder="Select country"
-          />
+            <CountrySelect
+              value={selectedCountry}
+              onSelect={setSelectedCountry}
+              placeholder="Select country"
+            />
+          </ByStack>
+
+          <ByText className="max-w-[300px]">
+            Add an amount for each of the following categories.
+          </ByText>
         </ByStack>
 
-        <ByText className="max-w-[300px]">
-          Add an amount for each of the following categories.
-        </ByText>
-      </ByStack>
+        {/* Sources list */}
 
-      {/* Sources list */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <ByStack direction="column" className="w-full gap-4">
+        <ByStack direction="column" className="gap-4 w-full">
           {incomeGroups.map(option => {
             const frequency = option.frequency
               ? FREQUENCY_OPTIONS.find(f => f.value === option.frequency)
@@ -79,13 +89,26 @@ export default function OnboardingIncomeAdd() {
                   {option.label}
                 </ByText>
 
-                <ByTextInput
-                  keyboardType="numeric"
-                  placeholder={`Enter amount for ${option.label}`}
-                  value={String(option.amount)}
-                  onChangeText={text => handleChangeIncome({ ...option, amount: text })}
-                  className="w-full mb-2"
-                />
+                <ByStack direction="row" className="relative gap-2 mb-2">
+                  {selectedCurrency && (
+                    <View
+                      className="absolute top-1/2 left-3 z-10 p-1.5 rounded-lg bg-white border border-secondary-400"
+                      style={{ transform: [{ translateY: '-50%' }] }}
+                    >
+                      <ByText fontWeight="bold" fontColor="secondary" size="xs">
+                        {selectedCurrencyDisplay}
+                      </ByText>
+                    </View>
+                  )}
+
+                  <ByTextInput
+                    keyboardType="numeric"
+                    placeholder={`Enter amount for ${option.label}`}
+                    value={String(option.amount)}
+                    onChangeText={text => handleChangeIncome({ ...option, amount: text })}
+                    className={clsx('w-full', selectedCurrency && '!pl-16')}
+                  />
+                </ByStack>
 
                 <BySelect
                   options={FREQUENCY_OPTIONS}

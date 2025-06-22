@@ -45,7 +45,7 @@ export default function OnboardingPresetsLayout() {
 
     if (pathname.includes('income-add')) {
       return [
-        { label: 'Back', route: 'income-preset' as const, type: 'primary-light' as const },
+        { label: 'Back', route: 'track-interest' as const, type: 'primary-light' as const },
         { label: 'Next', route: 'add-expenses' as const, type: 'primary' as const },
       ];
     }
@@ -86,7 +86,7 @@ export default function OnboardingPresetsLayout() {
           justifyContent="center"
           alignItems="center"
           gap={16}
-          className={clsx('absolute bottom-0 w-full px-12 pt-6 pb-12 bg-secondary-100')}
+          className={clsx('absolute bottom-0 px-12 pt-6 pb-12 w-full bg-secondary-100')}
         >
           {routeNavCTAProps.map(({ label, route, type }) => (
             <ByButton

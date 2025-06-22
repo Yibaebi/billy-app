@@ -4,7 +4,6 @@ import {
   Animated,
   Dimensions,
   Modal,
-  Platform,
   TouchableOpacity,
   useAnimatedValue,
   View,
@@ -330,30 +329,16 @@ export const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onClose, chil
     });
   }, [scaleAnim, opacityAnim, onClose]);
 
-  // Close Action
-  const handleClose = useCallback(() => {
-    animateOut();
-  }, [animateOut]);
-
   // Effect to handle modal visibility and animation
   useEffect(() => {
     if (visible) {
       animateIn();
     } else if (!visible) {
-      handleClose();
+      animateOut();
     }
   }, [visible]);
 
-  console.log({
-    platform: Platform.OS,
-    isModalVisible,
-    visible,
-    scaleAnim,
-    opacityAnim,
-    width: SCREEN_WIDTH * 0.9,
-  });
-
-  if (!isModalVisible) return null;
+  if (!visible) return null;
 
   return (
     <Modal
@@ -372,7 +357,7 @@ export const BlurOverlay: React.FC<BlurOverlayProps> = ({ visible, onClose, chil
           <TouchableOpacity
             className="flex absolute inset-0"
             activeOpacity={1}
-            onPress={handleClose}
+            onPress={animateOut}
           />
 
           <Animated.View
@@ -445,7 +430,13 @@ export const SlideFromSide: React.FC<SlideFromSideProps> = ({
   if (!visible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="none">
+    <Modal
+      transparent
+      visible={visible}
+      animationType="none"
+      hardwareAccelerated
+      statusBarTranslucent
+    >
       <View style={{ flex: 1, flexDirection: 'row' }}>
         {/* Backdrop */}
         <Animated.View className="absolute inset-0" style={{ opacity: backdropAnim }}>

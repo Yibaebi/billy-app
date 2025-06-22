@@ -52,8 +52,8 @@ export default function OnboardingIncomePreset() {
     };
 
     setSources(currSource => [newSourceData, ...currSource]);
-    handleCloseNewSource();
     setNewSource('');
+    handleCloseNewSource();
   };
 
   // Toggle source
@@ -64,8 +64,8 @@ export default function OnboardingIncomePreset() {
       )
     );
 
-  const checkIfNewSourceExists = useMemo(
-    () => sources.find(source => source.label.toLowerCase() === newSource.toLowerCase()),
+  const newSourceAlreadyExists = useMemo(
+    () => !!sources.find(source => source.label.toLowerCase() === newSource.toLowerCase()),
     [sources, newSource]
   );
 
@@ -79,7 +79,7 @@ export default function OnboardingIncomePreset() {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        className="w-full h-full gap-4 px-12"
+        className="gap-4 px-12 w-full h-full"
       >
         {/* Title and description */}
         <ByStack
@@ -106,10 +106,10 @@ export default function OnboardingIncomePreset() {
           direction="column"
           alignItems="center"
           justifyContent="center"
-          className="w-full gap-4 mb-4"
+          className="gap-4 mb-4 w-full"
         >
           {sources.map(option => (
-            <View key={option.id} className="relative flex w-full">
+            <View key={option.id} className="flex relative w-full">
               <ByCheckbox
                 label={option.label}
                 checked={option.checked}
@@ -129,12 +129,15 @@ export default function OnboardingIncomePreset() {
         </ByStack>
 
         {/* Add new source overlay */}
-        <BlurOverlay visible={showAddSource} height={320} onClose={handleCloseNewSource}>
-          <ByStack direction="column" className="bg-secondary-100 rounded-[36px] p-6 pt-[72px]">
+        <BlurOverlay visible={showAddSource} onClose={handleCloseNewSource}>
+          <ByStack
+            direction="column"
+            className="bg-secondary-100 rounded-[36px] p-6 pt-[72px] w-full z-50"
+          >
             {/* Close button */}
             <TouchableOpacity
               onPress={handleCloseNewSource}
-              className="absolute flex items-center justify-center p-2 rounded-full right-6 top-6 bg-secondary-300"
+              className="flex absolute top-6 right-6 justify-center items-center p-2 rounded-full bg-secondary-300"
               activeOpacity={0.7}
             >
               <IconSymbol name="xmark" size={14} color="black" />
@@ -145,23 +148,26 @@ export default function OnboardingIncomePreset() {
               direction="column"
               alignItems="center"
               justifyContent="center"
-              className="mb-6 rounded-[36px]"
+              className="mb-6 rounded-[36px] w-full"
             >
               <ByText fontWeight="bold" className="mb-2 text-2xl">
                 Add new source
               </ByText>
 
-              <ByText textAlign="center">
+              <ByText textAlign="center" className="max-w-[300px]">
                 Add an income source we missed — name it whatever makes sense to you.
               </ByText>
             </ByStack>
 
             {/* Input */}
             <ByInput
-              className={clsx('w-full mb-4', !!checkIfNewSourceExists && '!border-error')}
+              containerClassName="mb-4 gap-2"
+              className={clsx('w-full', newSourceAlreadyExists && '!border-error')}
               placeholder="Add new source"
               value={newSource}
               onChangeText={setNewSource}
+              error={newSourceAlreadyExists}
+              errorMessage={newSourceAlreadyExists ? "Oops — that one's already taken." : ''}
             />
 
             {/* Done button */}
@@ -170,7 +176,7 @@ export default function OnboardingIncomePreset() {
               title="Done"
               fullWidth
               onPress={addSource}
-              disabled={!!checkIfNewSourceExists || newSource.length < 3}
+              disabled={newSourceAlreadyExists || newSource.length < 3}
             />
           </ByStack>
         </BlurOverlay>
@@ -181,22 +187,22 @@ export default function OnboardingIncomePreset() {
         justifyContent="center"
         alignItems="center"
         gap={16}
-        className={clsx('absolute bottom-0 w-full px-12 pt-6 pb-12 bg-secondary-100')}
+        className={clsx('absolute bottom-0 px-12 pt-6 pb-12 w-full bg-secondary-100')}
       >
         <ByButton
           variant="primary-light"
           title="Add Source"
           fullWidth
-          rightIcon={<ByPlusIcon />}
+          rightIcon={<ByPlusIcon width={20} height={20} />}
           disabled={sources.length === 5}
           onPress={handleAddSource}
         />
 
         <ByButton
           variant="primary"
-          title="Add"
+          title="Next"
           fullWidth
-          onPress={() => router.push(`/onboarding/income-add`)}
+          onPress={() => router.push(`/onboarding/track-interest`)}
         />
       </ByStack>
     </>
