@@ -1,6 +1,6 @@
 import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Easing, Pressable } from 'react-native';
 
 import ByDashboardAnalyticsIcon from '@/components/svgs/DashboardAnalytics';
 import ByDashboardHomeIcon from '@/components/svgs/DashboardHomeIcon';
@@ -37,6 +37,14 @@ export default function DashboardLayout() {
   return (
     <Tabs
       screenOptions={{
+        animation: 'shift',
+        transitionSpec: {
+          animation: 'timing',
+          config: {
+            duration: 100,
+            easing: Easing.inOut(Easing.ease),
+          },
+        },
         headerShown: false,
         headerShadowVisible: false,
         title: '',
@@ -45,8 +53,8 @@ export default function DashboardLayout() {
         headerPressColor: Colors.secondary[100],
         tabBarButton: props => <CustomTabButton {...props} />,
         tabBarStyle: {
+          height: 68,
           paddingTop: 18,
-          paddingBottom: 18,
           paddingHorizontal: 48,
           borderTopWidth: 1,
           elevation: 0,

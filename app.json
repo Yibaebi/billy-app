@@ -26,6 +26,13 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "cameraPermission": "The app accesses your camera to let you take photos of your expenses in order to track them seamlessly.",
+          "cameraRollPermission": "The app accesses your camera roll to let you select photos of your expenses"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
