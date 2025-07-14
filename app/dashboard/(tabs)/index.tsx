@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, TouchableOpacity } from 'react-native';
 
+import SetMonthlyBudgetModal from '@/components/screens/dashboard/SetMonthlyBudgetModal';
 import ByArrowRightIcon from '@/components/svgs/ArrowRight';
 import ByFlashIcon from '@/components/svgs/FlashIcon';
 import GroupIcon from '@/components/svgs/GroupIcon';
@@ -44,6 +45,7 @@ const EXAMPLE_EXPENSES = [
 ];
 
 export default function DashboardHome() {
+  const [isOpen, setIsOpen] = useState(true);
   const [, setImage] = useState<string | null>(null);
 
   // Open Camera
@@ -220,11 +222,14 @@ export default function DashboardHome() {
                 title="Log expense"
                 fullWidth
                 rightIcon={<ByPlusIcon width={24} height={24} />}
+                onPress={() => setIsOpen(true)}
               />
             </ByStack>
           </ByStack>
         </ScrollView>
       </ByStack>
+
+      <SetMonthlyBudgetModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }
