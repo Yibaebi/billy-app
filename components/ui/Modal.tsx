@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { KeyboardAvoidingView, View } from 'react-native';
 import Modal, { ModalProps } from 'react-native-modal';
 
+import Colors from '@/constants/Colors';
 import { getIsIOS } from '@/utils/helpers';
 
 export type ByModalProps = Partial<ModalProps> & {
@@ -21,7 +22,12 @@ export default function ByModal({ children, isVisible, withInput, ...props }: By
   );
 
   return (
-    <Modal isVisible={isVisible} {...props}>
+    <Modal
+      isVisible={isVisible}
+      backdropColor={Colors.secondary.base}
+      backdropOpacity={0.25}
+      {...props}
+    >
       {content}
     </Modal>
   );
