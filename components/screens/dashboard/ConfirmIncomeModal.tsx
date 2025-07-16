@@ -9,17 +9,17 @@ import ByText from '@/components/ui/Text';
 import ByTextInput from '@/components/ui/TextInput';
 import Colors from '@/constants/Colors';
 
-interface ConfirmIncomeProps {
+interface ConfirmIncomeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function ConfirmIncome({ isOpen, onClose }: ConfirmIncomeProps) {
+export default function ConfirmIncomeModal({ isOpen, onClose }: ConfirmIncomeModalProps) {
   return (
     <ByModal withInput isVisible={isOpen} animationIn="slideInUp" animationOut="slideOutDown">
-      <ByStack justifyContent="flex-end" direction="column" className="w-full h-full pt-[72px]">
+      <ByStack justifyContent="flex-end" direction="column" className="w-full h-full">
         <View className="bg-white rounded-[36px] w-full relative p-6">
-          <ByStack direction="column" alignItems="center" className="pt-[72px]">
+          <ByStack direction="column" alignItems="center" className="pt-14 w-full">
             <ByStack
               direction="row"
               alignItems="center"
@@ -57,7 +57,12 @@ export default function ConfirmIncome({ isOpen, onClose }: ConfirmIncomeProps) {
               <ByTextInput />
             </ByStack>
 
-            <ByStack direction="row" justifyContent="center" className="gap-2 my-6 w-full">
+            <ByStack
+              direction="row"
+              alignItems="center"
+              justifyContent="center"
+              className="gap-2 my-6 w-full"
+            >
               <IconSymbol name="info.circle" size={16} color={Colors.textSecondary} />
 
               <ByText size="sm" textAlign="center" className="text-neutral-600">
