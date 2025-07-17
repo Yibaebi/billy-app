@@ -44,7 +44,7 @@ export default function PercentageSlider({
       if (disabled) return;
 
       const { x } = e;
-      const newValue = Math.round((x / sliderWidth) * maxValue);
+      const newValue = Math.round((x / sliderWidthMinusIndicator) * maxValue);
       const clampedValue = Math.max(0, Math.min(newValue, maxValue));
 
       if (clampedValue !== value) {
