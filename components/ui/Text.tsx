@@ -7,7 +7,7 @@ export interface ByTextProps extends TextProps {
   className?: string;
   fontWeight?: 'regular' | 'light' | 'semibold' | 'bold' | 'extrabold' | 'black';
   fontStyle?: 'normal' | 'italic';
-  fontColor?: 'primary' | 'secondary' | 'inherit';
+  fontColor?: 'primary' | 'secondary' | 'inherit' | string;
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
 }
@@ -38,7 +38,7 @@ const getFontColorClass = (color: ByTextProps['fontColor']) => {
     case 'inherit':
       return 'text-inherit';
     default:
-      return 'text-neutral-base';
+      return color;
   }
 };
 

@@ -3,7 +3,7 @@ import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, TouchableOpacity } from 'react-native';
 
-import ConfirmIncome from '@/components/screens/dashboard/ConfirmIncome';
+import BudgetSplitModal from '@/components/screens/dashboard/BudgetSplitModal';
 import ByArrowRightIcon from '@/components/svgs/ArrowRight';
 import ByFlashIcon from '@/components/svgs/FlashIcon';
 import GroupIcon from '@/components/svgs/GroupIcon';
@@ -230,7 +230,8 @@ export default function DashboardHome() {
       </ByStack>
 
       {/* <SetMonthlyBudgetModal isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
-      <ConfirmIncome isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {/* <ConfirmIncomeModal isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
+      <BudgetSplitModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 }

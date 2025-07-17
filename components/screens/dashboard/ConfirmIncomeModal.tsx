@@ -3,11 +3,11 @@ import { TouchableOpacity, View } from 'react-native';
 import ArrowLeft from '@/components/svgs/ArrowLeft';
 import ByButton from '@/components/ui/Button';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import ByInfoText from '@/components/ui/InfoText';
 import ByModal from '@/components/ui/Modal';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
 import ByTextInput from '@/components/ui/TextInput';
-import Colors from '@/constants/Colors';
 
 interface ConfirmIncomeModalProps {
   isOpen: boolean;
@@ -57,18 +57,7 @@ export default function ConfirmIncomeModal({ isOpen, onClose }: ConfirmIncomeMod
               <ByTextInput />
             </ByStack>
 
-            <ByStack
-              direction="row"
-              alignItems="center"
-              justifyContent="center"
-              className="gap-2 my-6 w-full"
-            >
-              <IconSymbol name="info.circle" size={16} color={Colors.textSecondary} />
-
-              <ByText size="sm" textAlign="center" className="text-neutral-600">
-                You can always adjust this later on your profile.
-              </ByText>
-            </ByStack>
+            <ByInfoText text="You can always adjust this later on your profile." className="my-6" />
 
             <ByButton fullWidth title="Continue" onPress={onClose} />
           </ByStack>
