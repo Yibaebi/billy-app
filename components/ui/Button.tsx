@@ -12,6 +12,7 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
       'primary-light': 'bg-primary-100 active:bg-primary-200',
       'primary-outline': 'border border-primary-500',
       neutral: 'bg-neutral-200 active:bg-neutral-300',
+      text: 'bg-transparent',
     },
     size: {
       sm: 'h-[36px] px-4',
@@ -36,6 +37,11 @@ const buttonVariants = cva('rounded-[100px] flex items-center justify-center px-
     },
     {
       disabled: true,
+      variant: 'text',
+      className: '!text-primary-600 !bg-transparent',
+    },
+    {
+      disabled: true,
       variant: 'primary',
       className: '!bg-primary-200 border border-primary-400 !opacity-50',
     },
@@ -50,6 +56,7 @@ const textColorVariants = cva('', {
       'primary-light': 'secondary' as const,
       'primary-outline': 'primary' as const,
       neutral: 'secondary' as const,
+      text: 'text-primary-600' as const,
     },
     disabled: {
       true: 'secondary' as const,
