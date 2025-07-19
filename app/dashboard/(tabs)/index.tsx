@@ -45,6 +45,9 @@ const EXAMPLE_EXPENSES = [
 ];
 
 export default function DashboardHome() {
+  const [currSetting, setCurrSetting] = useState<'budget-split' | 'expense-addtion'>(
+    'expense-addtion'
+  );
   const [isOpen, setIsOpen] = useState(true);
   const [, setImage] = useState<string | null>(null);
 
@@ -231,7 +234,13 @@ export default function DashboardHome() {
 
       {/* <SetMonthlyBudgetModal isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
       {/* <ConfirmIncomeModal isOpen={isOpen} onClose={() => setIsOpen(false)} /> */}
-      <BudgetSplitModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+
+      <BudgetSplitModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        currSetting={currSetting}
+        onSettingChange={setCurrSetting}
+      />
     </>
   );
 }

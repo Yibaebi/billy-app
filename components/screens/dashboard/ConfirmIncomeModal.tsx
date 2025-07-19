@@ -1,13 +1,12 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
-import ArrowLeft from '@/components/svgs/ArrowLeft';
 import ByButton from '@/components/ui/Button';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import ByInfoText from '@/components/ui/InfoText';
 import ByModal from '@/components/ui/Modal';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
 import ByTextInput from '@/components/ui/TextInput';
+import ModalHeader from './ModalHeader';
 
 interface ConfirmIncomeModalProps {
   isOpen: boolean;
@@ -20,28 +19,7 @@ export default function ConfirmIncomeModal({ isOpen, onClose }: ConfirmIncomeMod
       <ByStack justifyContent="flex-end" direction="column" className="w-full h-full">
         <View className="bg-white rounded-[36px] w-full relative p-6">
           <ByStack direction="column" alignItems="center" className="pt-14 w-full">
-            <ByStack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              className="absolute top-0 right-0 w-full"
-            >
-              <TouchableOpacity
-                onPress={onClose}
-                className="z-10 justify-center items-center p-2 rounded-full bg-neutral-100"
-                activeOpacity={0.7}
-              >
-                <ArrowLeft width={18} height={18} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={onClose}
-                className="z-10 justify-center items-center p-2 rounded-full bg-neutral-100"
-                activeOpacity={0.7}
-              >
-                <IconSymbol name="xmark" size={14} color="black" />
-              </TouchableOpacity>
-            </ByStack>
+            <ModalHeader onClose={onClose} />
 
             <ByText textAlign="center" size="2xl" fontWeight="bold" className="mb-7">
               Confirm Income Summary

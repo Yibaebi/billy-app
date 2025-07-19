@@ -1,11 +1,11 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import BudgetPlanIllustration from '@/components/svgs/BudgetPlanIllustration';
 import ByButton from '@/components/ui/Button';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import ByModal from '@/components/ui/Modal';
 import ByStack from '@/components/ui/Stack';
 import ByText from '@/components/ui/Text';
+import ModalHeader from './ModalHeader';
 
 interface SetMonthlyBudgetModalProps {
   isOpen: boolean;
@@ -18,13 +18,7 @@ export default function SetMonthlyBudgetModal({ isOpen, onClose }: SetMonthlyBud
       <ByStack justifyContent="flex-end" direction="column" className="w-full h-full pt-[72px]">
         <View className="bg-white rounded-[36px] w-full relative p-6">
           <ByStack direction="column" alignItems="center" className="pt-[72px]">
-            <TouchableOpacity
-              onPress={onClose}
-              className="absolute top-0 right-0 z-10 justify-center items-center p-2 rounded-full bg-neutral-100"
-              activeOpacity={0.7}
-            >
-              <IconSymbol name="xmark" size={14} color="black" />
-            </TouchableOpacity>
+            <ModalHeader onClose={onClose} hideBackButton />
 
             <BudgetPlanIllustration />
 
