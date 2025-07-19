@@ -7,9 +7,16 @@ import { getIsIOS } from '@/utils/helpers';
 
 export type ByModalProps = Partial<ModalProps> & {
   withInput?: boolean;
+  onClose?: () => void;
 };
 
-export default function ByModal({ children, isVisible, withInput, ...props }: ByModalProps) {
+export default function ByModal({
+  children,
+  isVisible,
+  withInput,
+  onClose,
+  ...props
+}: ByModalProps) {
   const commonClasses = clsx('flex-1 justify-center items-center h-full w-full', props.className);
 
   // Differentiate between modal with input and without input
@@ -26,6 +33,7 @@ export default function ByModal({ children, isVisible, withInput, ...props }: By
       isVisible={isVisible}
       backdropColor={Colors.secondary.base}
       backdropOpacity={0.25}
+      onBackdropPress={onClose}
       {...props}
     >
       {content}
