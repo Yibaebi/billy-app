@@ -16,6 +16,7 @@ interface SegmentedTabsProps<T extends SegmentedTabItemProps> {
   selectedId: T['id'];
   onChange: (id: T['id']) => void;
   className?: string;
+  itemClassName?: string;
 }
 
 export default function SegmentedTabs<T extends SegmentedTabItemProps>({
@@ -23,6 +24,7 @@ export default function SegmentedTabs<T extends SegmentedTabItemProps>({
   selectedId,
   onChange,
   className,
+  itemClassName,
 }: SegmentedTabsProps<T>) {
   const handlePress = (id: T['id']) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -30,28 +32,37 @@ export default function SegmentedTabs<T extends SegmentedTabItemProps>({
   };
 
   return (
-    <ScrollView horizontal className={clsx('p-1 w-full bg-white rounded-2xl h-[56px]', className)}>
-      <ByStack direction="row" className="overflow-hidden h-full rounded-xl bg-neutral-100/50">
-        {tabs.map(tab => {
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className={clsx('bg-white h-[56px]')}
+    >
+      <ByStack direction="row" className={className}>
+        {tabs.map((tab, index) => {
           const isSelected = tab.id === selectedId;
 
           return (
-            <Pressable key={tab.id} className={clsx('flex-1')} onPress={() => handlePress(tab.id)}>
+            <Pressable
+              key={tab.id}
+              className={clsx('flex-shrink-0', itemClassName)}
+              onPress={() => handlePress(tab.id)}
+            >
               <ByStack
                 direction="row"
                 alignItems="center"
                 justifyContent="center"
                 className={clsx(
-                  'h-full rounded-xl px-3 min-w-[100px]',
-                  isSelected && 'bg-primary-800'
+                  'px-8 py-3.5 border-b-4',
+                  isSelected ? 'border-b-secondary-800' : 'border-b-secondary-400'
                 )}
               >
                 {tab.icon}
 
                 <ByText
                   className={clsx(
-                    'ml-2 text-sm font-medium',
-                    isSelected ? 'text-secondary-800' : 'text-secondary-600'
+                    'text-sm font-medium whitespace-nowrap',
+                    tab.icon && 'ml-2',
+                    !isSelected && 'text-secondary-400'
                   )}
                 >
                   {tab.label}

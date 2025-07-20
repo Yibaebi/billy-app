@@ -34,6 +34,7 @@ export default function ByModal({
       backdropColor={Colors.secondary.base}
       backdropOpacity={0.25}
       onBackdropPress={onClose}
+      className="!m-0 p-3"
       {...props}
     >
       {content}
